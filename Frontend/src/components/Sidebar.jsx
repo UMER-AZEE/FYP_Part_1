@@ -1,6 +1,20 @@
 import { pageGroups } from '../config/navigation'
 
-export default function Sidebar({ page, onNavigate }) {
+function getDisplayName(user) {
+  return [user.first_name, user.last_name].filter(Boolean).join(' ').trim()
+}
+
+function getInitials(user) {
+  return [user.first_name, user.last_name]
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0]?.toUpperCase() || '')
+    .join('')
+}
+
+export default function Sidebar({ page, onNavigate, user, onLogout }) {
+  const displayName = getDisplayName(user)
+
   return (
     <aside className="side">
       <div className="brand">
@@ -26,12 +40,15 @@ export default function Sidebar({ page, onNavigate }) {
 
       <div className="side-foot">
         <div className="user">
-          <div className="avatar">MR</div>
+          <div className="avatar">{getInitials(user)}</div>
           <div>
-            <div className="user-name">M. Ramirez</div>
-            <div className="user-role">Security Lead</div>
+            <div className="user-name">{displayName}</div>
+            <div className="user-role">{user.company?.name || user.email}</div>
           </div>
         </div>
+        <button type="button" className="btn logout-btn" onClick={onLogout}>
+          Sign out
+        </button>
       </div>
     </aside>
   )

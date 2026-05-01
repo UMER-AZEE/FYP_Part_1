@@ -1,0 +1,112 @@
+from datetime import datetime, timezone
+
+from bson import ObjectId
+
+from app.models.user import User
+from app.repositories.company_repository import CompanyRepository
+
+
+def _ensure_utc(dt: datetime | None) -> datetime | None:
+    """Ensure a datetime is timezone-aware (UTC).
+
+    The fallback JSON database can return naive datetimes after
+    serialisation round-trips, while the application always creates
+    UTC-aware datetimes.  Mixing the two causes a TypeError on
+    subtraction, so we normalise here at the repository boundary.
+    """
+    if dt is None:
+        return None
+    if dt.tzinfo is None:
+        return dt.replace(tzinfo=timezone.utc)
+    return dt
+
+
+class UserRepository:
+    def __init__(self, database, company_repository: CompanyRepository):
+        self.collection = database.users
+        self.company_repository = company_repository
+
+    def _to_model(self, document: dict | None) -> User | None:
+        if document is None:
+            return None
+
+        company = self.company_repository.find_by_id(str(document['company_id']))
+        if company is None:
+            raise RuntimeError('User references a missing company document')
+
+        return User(
+            id=str(document['_id']),
+            full_name=document.get('full_name', ''),
+            first_name=document['first_name'],
+            last_name=document['last_name'],
+            email=document['email'],
+            password_hash=document['password_hash'],
+            company=company,
+            is_email_verified=document.get('is_email_verified', False),
+            email_verification_code_hash=document.get('email_verification_code_hash'),
+            email_verification_expires_at=_ensure_utc(document.get('email_verification_expires_at')),
+            email_verification_sent_at=_ensure_utc(document.get('email_verification_sent_at')),
+            email_verification_delivery_mode=document.get('email_verification_delivery_mode'),
+            email_verification_attempts=document.get('email_verification_attempts', 0),
+            password_reset_code_hash=document.get('password_reset_code_hash'),
+            password_reset_expires_at=_ensure_utc(document.get('password_reset_expires_at')),
+            password_reset_sent_at=_ensure_utc(document.get('password_reset_sent_at')),
+            password_reset_delivery_mode=document.get('password_reset_delivery_mode'),
+            password_reset_attempts=document.get('password_reset_attempts', 0),
+            created_at=_ensure_utc(document['created_at']),
+        )
+
+    def find_by_email(self, email: str) -> User | None:
+        return self._to_model(self.collection.find_one({'email': email}))
+
+    def create(self, user: User) -> User:
+        payload = {
+            'full_name': user.full_name,
+            'first_name': user.first_name,
+            'last_name': user.last_name,
+            'email': user.email,
+            'password_hash': user.password_hash,
+            'company_id': ObjectId(user.company.id),
+            'is_email_verified': user.is_email_verified,
+            'email_verification_code_hash': user.email_verification_code_hash,
+            'email_verification_expires_at': user.email_verification_expires_at,
+            'email_verification_sent_at': user.email_verification_sent_at,
+            'email_verification_delivery_mode': user.email_verification_delivery_mode,
+            'email_verification_attempts': user.email_verification_attempts,
+            'password_reset_code_hash': user.password_reset_code_hash,
+            'password_reset_expires_at': user.password_reset_expires_at,
+            'password_reset_sent_at': user.password_reset_sent_at,
+            'password_reset_delivery_mode': user.password_reset_delivery_mode,
+            'password_reset_attempts': user.password_reset_attempts,
+            'created_at': user.created_at,
+        }
+        result = self.collection.insert_one(payload)
+        user.id = str(result.inserted_id)
+        return user
+
+    def save(self, user: User) -> User:
+        self.collection.update_one(
+            {'_id': ObjectId(user.id)},
+            {
+                '$set': {
+                    'full_name': user.full_name,
+                    'first_name': user.first_name,
+                    'last_name': user.last_name,
+                    'email': user.email,
+                    'password_hash': user.password_hash,
+                    'company_id': ObjectId(user.company.id),
+                    'is_email_verified': user.is_email_verified,
+                    'email_verification_code_hash': user.email_verification_code_hash,
+                    'email_verification_expires_at': user.email_verification_expires_at,
+                    'email_verification_sent_at': user.email_verification_sent_at,
+                    'email_verification_delivery_mode': user.email_verification_delivery_mode,
+                    'email_verification_attempts': user.email_verification_attempts,
+                    'password_reset_code_hash': user.password_reset_code_hash,
+                    'password_reset_expires_at': user.password_reset_expires_at,
+                    'password_reset_sent_at': user.password_reset_sent_at,
+                    'password_reset_delivery_mode': user.password_reset_delivery_mode,
+                    'password_reset_attempts': user.password_reset_attempts,
+                }
+            },
+        )
+        return user
