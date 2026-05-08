@@ -3,8 +3,9 @@ import { ErrorState, LoadingState } from './components/DataState'
 import PageTitle from './components/PageTitle'
 import Sidebar from './components/Sidebar'
 import Topbar from './components/Topbar'
-import { getInitialPage, isValidPage } from './config/navigation'
+import { isValidPage } from './config/navigation'
 import { useDashboardData } from './hooks/useDashboardData'
+import AcceptInvitePage from './pages/auth/AcceptInvitePage'
 import LoginPage from './pages/auth/LoginPage'
 import SignupPage from './pages/auth/SignupPage'
 import ForgotPasswordPage from './pages/auth/ForgotPasswordPage'
@@ -18,19 +19,31 @@ import {
   setPendingVerificationState,
 } from './services/auth/authService'
 
-function getRoute() {
-  return window.location.hash.replace('#', '')
+function getHashState() {
+  const rawHash = window.location.hash.replace('#', '')
+  const [route = '', query = ''] = rawHash.split('?')
+  return {
+    route,
+    params: new URLSearchParams(query),
+  }
 }
 
 export default function App() {
-  const [route, setRoute] = useState(getRoute)
+  const [hashState, setHashState] = useState(getHashState)
   const [user, setUser] = useState(null)
   const [authLoading, setAuthLoading] = useState(true)
   const [verificationState, setVerificationState] = useState(getPendingVerificationState)
-  const { data, error, loading } = useDashboardData()
+  const route = hashState.route
+  const invitationToken = hashState.params.get('token') || ''
+  const openCreateUser = hashState.params.get('modal') === 'add'
+  const isManager = user?.role?.trim().toLowerCase() === 'manager'
+  const page = isValidPage(route) && (route !== 'users' || isManager) ? route : 'insights'
+  const ActivePage = pageRegistry[page] || pageRegistry.insights
+  const shouldLoadDashboard = Boolean(user) && page !== 'users'
+  const { data, error, loading } = useDashboardData({ enabled: shouldLoadDashboard })
 
   useEffect(() => {
-    const onHashChange = () => setRoute(getRoute())
+    const onHashChange = () => setHashState(getHashState())
     window.addEventListener('hashchange', onHashChange)
     return () => window.removeEventListener('hashchange', onHashChange)
   }, [])
@@ -73,7 +86,7 @@ export default function App() {
   const navigate = (key) => {
     if (!isValidPage(key)) return
     window.location.hash = key
-    setRoute(key)
+    setHashState(getHashState())
   }
 
   const handleAuthenticated = (nextUser) => {
@@ -81,7 +94,7 @@ export default function App() {
     setPendingVerificationState(null)
     setVerificationState({ email: '', message: '' })
     window.location.hash = 'insights'
-    setRoute('insights')
+    setHashState(getHashState())
   }
 
   const handleVerificationRequired = (pendingState) => {
@@ -91,7 +104,7 @@ export default function App() {
       message: pendingState?.message || '',
     })
     window.location.hash = 'verify-email'
-    setRoute('verify-email')
+    setHashState(getHashState())
   }
 
   const handleLogout = () => {
@@ -99,13 +112,12 @@ export default function App() {
     setUser(null)
     setVerificationState({ email: '', message: '' })
     window.location.hash = 'login'
-    setRoute('login')
+    setHashState(getHashState())
   }
-
-  const page = isValidPage(route) ? route : getInitialPage()
-  const ActivePage = pageRegistry[page] || pageRegistry.insights
   const AuthPage =
-    route === 'signup'
+    route === 'accept-invite'
+      ? AcceptInvitePage
+      : route === 'signup'
       ? SignupPage
       : route === 'verify-email'
         ? VerifyEmailPage
@@ -138,8 +150,9 @@ export default function App() {
         }}
         onGoToLogin={() => {
           window.location.hash = 'login'
-          setRoute('login')
+          setHashState(getHashState())
         }}
+        token={invitationToken}
       />
     )
   }
@@ -149,13 +162,14 @@ export default function App() {
       <Sidebar page={page} onNavigate={navigate} user={user} onLogout={handleLogout} />
 
       <main className="min-w-0">
-        <Topbar page={page} />
+        <Topbar page={page} user={user} />
 
         <div className="content">
           <PageTitle page={page} />
-          {loading ? <LoadingState /> : null}
-          {!loading && error ? <ErrorState error={error} /> : null}
-          {!loading && !error && data ? <ActivePage data={data} /> : null}
+          {page === 'users' ? <ActivePage currentUser={user} openCreateUser={openCreateUser} /> : null}
+          {page !== 'users' && loading ? <LoadingState /> : null}
+          {page !== 'users' && !loading && error ? <ErrorState error={error} /> : null}
+          {page !== 'users' && !loading && !error && data ? <ActivePage data={data} currentUser={user} /> : null}
         </div>
       </main>
     </div>
