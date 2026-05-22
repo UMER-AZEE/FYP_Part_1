@@ -34,12 +34,16 @@ export default function App() {
   const [authLoading, setAuthLoading] = useState(true)
   const [verificationState, setVerificationState] = useState(getPendingVerificationState)
   const route = hashState.route
+  const isInvitationRoute = route === 'accept-invite'
   const invitationToken = hashState.params.get('token') || ''
   const openCreateUser = hashState.params.get('modal') === 'add'
+  const openCreateIntegration = hashState.params.get('modal') === 'add'
   const isManager = user?.role?.trim().toLowerCase() === 'manager'
-  const page = isValidPage(route) && (route !== 'users' || isManager) ? route : 'insights'
+  const managerOnlyPages = new Set(['users', 'integrations'])
+  const page = isValidPage(route) && (!managerOnlyPages.has(route) || isManager) ? route : 'insights'
   const ActivePage = pageRegistry[page] || pageRegistry.insights
-  const shouldLoadDashboard = Boolean(user) && page !== 'users'
+  const isStandalonePage = page === 'users' || page === 'inventory' || page === 'integrations'
+  const shouldLoadDashboard = Boolean(user) && !isStandalonePage
   const { data, error, loading } = useDashboardData({ enabled: shouldLoadDashboard })
 
   useEffect(() => {
@@ -114,6 +118,14 @@ export default function App() {
     window.location.hash = 'login'
     setHashState(getHashState())
   }
+
+  const handleGoToLogin = () => {
+    logoutUser()
+    setUser(null)
+    window.location.hash = 'login'
+    setHashState(getHashState())
+  }
+
   const AuthPage =
     route === 'accept-invite'
       ? AcceptInvitePage
@@ -126,10 +138,28 @@ export default function App() {
           : LoginPage
 
   if (authLoading) {
+    if (isInvitationRoute) {
+      return (
+        <AcceptInvitePage
+          token={invitationToken}
+          onGoToLogin={handleGoToLogin}
+        />
+      )
+    }
+
     return (
       <div className="auth-loading">
         <LoadingState />
       </div>
+    )
+  }
+
+  if (isInvitationRoute) {
+    return (
+      <AcceptInvitePage
+        token={invitationToken}
+        onGoToLogin={handleGoToLogin}
+      />
     )
   }
 
@@ -148,10 +178,7 @@ export default function App() {
           setPendingVerificationState(mergedState)
           setVerificationState(mergedState)
         }}
-        onGoToLogin={() => {
-          window.location.hash = 'login'
-          setHashState(getHashState())
-        }}
+        onGoToLogin={handleGoToLogin}
         token={invitationToken}
       />
     )
@@ -167,9 +194,11 @@ export default function App() {
         <div className="content">
           <PageTitle page={page} />
           {page === 'users' ? <ActivePage currentUser={user} openCreateUser={openCreateUser} /> : null}
-          {page !== 'users' && loading ? <LoadingState /> : null}
-          {page !== 'users' && !loading && error ? <ErrorState error={error} /> : null}
-          {page !== 'users' && !loading && !error && data ? <ActivePage data={data} currentUser={user} /> : null}
+          {page === 'inventory' ? <ActivePage currentUser={user} /> : null}
+          {page === 'integrations' ? <ActivePage currentUser={user} openCreateIntegration={openCreateIntegration} /> : null}
+          {!isStandalonePage && loading ? <LoadingState /> : null}
+          {!isStandalonePage && !loading && error ? <ErrorState error={error} /> : null}
+          {!isStandalonePage && !loading && !error && data ? <ActivePage data={data} currentUser={user} /> : null}
         </div>
       </main>
     </div>
