@@ -5,9 +5,19 @@ export const pageGroups = [
       { key: 'insights', label: 'Insights' },
       { key: 'policies', label: 'Policies', count: 24 },
       { key: 'violations', label: 'Violations', count: 17, danger: true },
-      { key: 'users', label: 'Users' },
       { key: 'activity-log', label: 'Activity Log' },
     ],
+  },
+  {
+    title: 'Users',
+    items: [
+      { key: 'inventory', label: 'Inventory' },
+      { key: 'users', label: 'Insight' },
+    ],
+  },
+  {
+    title: 'Integration',
+    items: [{ key: 'integrations', label: 'LLM Providers' }],
   },
   {
     title: 'Models',
@@ -30,6 +40,18 @@ export const pageMeta = {
     subtitle: 'Overview of LLM usage, violations and cost across all integrated providers.',
     search: 'Search prompts, users, models…',
   },
+  integrations: {
+    section: 'Integration',
+    title: 'LLM Integrations',
+    subtitle: 'Connect organization-owned provider accounts, API keys, and model access.',
+    search: 'Search providers, accounts, and models…',
+  },
+  inventory: {
+    section: 'Observability',
+    title: 'Inventory',
+    subtitle: 'Manage group definitions, attached DLP policies, and guardrails bundles.',
+    search: 'Search groups and policy bundles…',
+  },
   policies: {
     section: 'Observability',
     title: 'Policies',
@@ -43,10 +65,10 @@ export const pageMeta = {
     search: 'Search incidents and categories…',
   },
   users: {
-    section: 'Observability',
+    section: 'Insight',
     title: 'Users',
-    subtitle: 'Risk posture, usage density, and behavior patterns across teams.',
-    search: 'Search users and teams…',
+    subtitle: 'Invite employees, manage roles, and maintain the live company directory.',
+    search: 'Search employees and departments…',
   },
   'activity-log': {
     section: 'Observability',
@@ -85,6 +107,6 @@ export function isValidPage(page) {
 }
 
 export function getInitialPage() {
-  const hash = window.location.hash.replace('#', '')
+  const hash = window.location.hash.replace('#', '').split('?')[0]
   return isValidPage(hash) ? hash : 'insights'
 }
