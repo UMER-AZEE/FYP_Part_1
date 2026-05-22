@@ -69,6 +69,21 @@ export async function resetPassword(formData) {
   })
 }
 
+export async function fetchInvitationDetails(token) {
+  const params = new URLSearchParams({ token })
+  return apiRequest(`/auth/invitation?${params.toString()}`, {
+    token: '',
+  })
+}
+
+export async function acceptInvitation(formData) {
+  return apiRequest('/auth/accept-invitation', {
+    method: 'POST',
+    body: JSON.stringify(formData),
+    token: '',
+  })
+}
+
 export async function fetchCurrentUser() {
   return apiRequest('/auth/me')
 }
