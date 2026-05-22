@@ -1,12 +1,16 @@
 import { useEffect, useState } from 'react'
 import { getDashboardData } from '../services/dashboard/dashboardService'
 
-export function useDashboardData() {
+export function useDashboardData({ enabled = true } = {}) {
   const [data, setData] = useState(null)
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(enabled)
   const [error, setError] = useState(null)
 
   useEffect(() => {
+    if (!enabled) {
+      return undefined
+    }
+
     let isMounted = true
 
     async function loadDashboard() {
@@ -33,7 +37,11 @@ export function useDashboardData() {
     return () => {
       isMounted = false
     }
-  }, [])
+  }, [enabled])
 
-  return { data, loading, error }
+  return {
+    data: enabled ? data : null,
+    loading: enabled ? loading : false,
+    error: enabled ? error : null,
+  }
 }
