@@ -14,16 +14,23 @@ function getInitials(user) {
 
 export default function Sidebar({ page, onNavigate, user, onLogout }) {
   const displayName = getDisplayName(user)
+  const isManager = user.role?.trim().toLowerCase() === 'manager'
+  const userGroups = Array.isArray(user.groups) ? user.groups : []
+  const managerOnlyPages = new Set(['users', 'integrations'])
+  const visibleGroups = pageGroups.map((group) => ({
+    ...group,
+    items: group.items.filter((item) => !managerOnlyPages.has(item.key) || isManager),
+  }))
 
   return (
     <aside className="side">
       <div className="brand">
-        <div className="brand-mark">C</div>
-        <div className="brand-name">Centurion</div>
+        <div className="brand-mark">S</div>
+        <div className="brand-name">Sentinel AI</div>
         <div className="brand-env">prod</div>
       </div>
 
-      {pageGroups.map((group) => (
+      {visibleGroups.map((group) => (
         <div className="nav-section" key={group.title}>
           <div className="nav-label">{group.title}</div>
           {group.items.map((item) => (
@@ -43,7 +50,16 @@ export default function Sidebar({ page, onNavigate, user, onLogout }) {
           <div className="avatar">{getInitials(user)}</div>
           <div>
             <div className="user-name">{displayName}</div>
-            <div className="user-role">{user.company?.name || user.email}</div>
+            <div className="user-role">
+              {[user.role, user.department, user.company?.name].filter(Boolean).join(' · ') || user.email}
+            </div>
+            {userGroups.length ? (
+              <div className="user-groups">
+                {userGroups.map((group) => (
+                  <span className="user-group-chip" key={group}>{group}</span>
+                ))}
+              </div>
+            ) : null}
           </div>
         </div>
         <button type="button" className="btn logout-btn" onClick={onLogout}>
