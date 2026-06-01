@@ -17,7 +17,10 @@ export const pageGroups = [
   },
   {
     title: 'Integration',
-    items: [{ key: 'integrations', label: 'LLM Providers' }],
+    items: [
+      { key: 'integrations', label: 'LLM Providers' },
+      { key: 'prompt-studio', label: 'Prompt Studio' },
+    ],
   },
   {
     title: 'Models',
@@ -45,6 +48,12 @@ export const pageMeta = {
     title: 'LLM Integrations',
     subtitle: 'Connect organization-owned provider accounts, API keys, and model access.',
     search: 'Search providers, accounts, and models…',
+  },
+  'prompt-studio': {
+    section: 'Integration',
+    title: 'Prompt Studio',
+    subtitle: 'Run prompts through approved integrations, tag them with groups, and review live execution history.',
+    search: 'Search recent prompt runs and workspace metadata…',
   },
   inventory: {
     section: 'Observability',
