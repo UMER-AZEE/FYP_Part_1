@@ -42,7 +42,8 @@ export default function App() {
   const managerOnlyPages = new Set(['users', 'integrations'])
   const page = isValidPage(route) && (!managerOnlyPages.has(route) || isManager) ? route : 'insights'
   const ActivePage = pageRegistry[page] || pageRegistry.insights
-  const isStandalonePage = page === 'users' || page === 'inventory' || page === 'integrations'
+  const isStandalonePage =
+    page === 'users' || page === 'inventory' || page === 'integrations' || page === 'prompt-studio'
   const shouldLoadDashboard = Boolean(user) && !isStandalonePage
   const { data, error, loading } = useDashboardData({ enabled: shouldLoadDashboard })
 
@@ -196,6 +197,7 @@ export default function App() {
           {page === 'users' ? <ActivePage currentUser={user} openCreateUser={openCreateUser} /> : null}
           {page === 'inventory' ? <ActivePage currentUser={user} /> : null}
           {page === 'integrations' ? <ActivePage currentUser={user} openCreateIntegration={openCreateIntegration} /> : null}
+          {page === 'prompt-studio' ? <ActivePage currentUser={user} /> : null}
           {!isStandalonePage && loading ? <LoadingState /> : null}
           {!isStandalonePage && !loading && error ? <ErrorState error={error} /> : null}
           {!isStandalonePage && !loading && !error && data ? <ActivePage data={data} currentUser={user} /> : null}
