@@ -41,7 +41,7 @@ export default function SignupPage({ onVerificationRequired }) {
 
   return (
     <AuthShell
-      eyebrow="Centurion Access"
+      eyebrow="Sentinel AI Access"
       title="Create a new operator account"
       subtitle="Provision a workspace login backed by hashed passwords and JWT-based API access."
       footer={(
@@ -90,7 +90,7 @@ export default function SignupPage({ onVerificationRequired }) {
             type="text"
             value={form.company_name}
             onChange={updateField}
-            placeholder="Centurion Security"
+            placeholder="Sentinel AI Security"
             required
           />
         </label>
