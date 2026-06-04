@@ -64,7 +64,7 @@ export default function ForgotPasswordPage({ onGoToLogin }) {
 
   return (
     <AuthShell
-      eyebrow="Centurion Recovery"
+      eyebrow="Sentinel AI Recovery"
       title="Reset your password"
       subtitle="Request a one-time code by email, then choose a new password for the account."
       footer={(
