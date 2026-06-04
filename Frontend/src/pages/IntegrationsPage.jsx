@@ -5,6 +5,7 @@ import { getDashboardData } from '../services/dashboard/dashboardService'
 import {
   createLLMIntegration,
   deleteLLMIntegration,
+  fetchAvailableLLMModels,
   fetchLLMIntegrations,
   updateLLMIntegration,
 } from '../services/integrations/llmIntegrationService'
@@ -72,6 +73,14 @@ function formatDate(value) {
   })
 }
 
+function getModelPreview(models, limit = 4) {
+  return {
+    visibleModels: models.slice(0, limit),
+    hiddenCount: Math.max(0, models.length - limit),
+    fullList: models.join(', '),
+  }
+}
+
 export default function IntegrationsPage({ currentUser, openCreateIntegration = false }) {
   const [integrations, setIntegrations] = useState([])
   const [loading, setLoading] = useState(true)
@@ -84,6 +93,9 @@ export default function IntegrationsPage({ currentUser, openCreateIntegration = 
   const [submitting, setSubmitting] = useState(false)
   const [deletingIntegrationId, setDeletingIntegrationId] = useState('')
   const [policyOptions, setPolicyOptions] = useState([])
+  const [availableModels, setAvailableModels] = useState([])
+  const [modelsLoading, setModelsLoading] = useState(false)
+  const [modelsError, setModelsError] = useState('')
 
   async function loadIntegrations() {
     try {
@@ -149,28 +161,41 @@ export default function IntegrationsPage({ currentUser, openCreateIntegration = 
     }
   }, [])
 
-  useEffect(() => {
-    if (!openCreateIntegration) return
-
-    const timer = window.setTimeout(() => {
-      openCreateModal()
-    }, 0)
-
-    return () => window.clearTimeout(timer)
-  }, [openCreateIntegration])
-
-  const openCreateModal = (providerId = '') => {
+  function openCreateModal(providerId = '') {
     setEditingIntegration(null)
-    const provider = providerMap[providerId]
     setForm({
       ...emptyForm,
       provider: providerId,
       policy_name: policyOptions[0] || '',
-      models: provider ? [provider.models[0]] : [],
+      models: [],
     })
     setFormError('')
+    setAvailableModels([])
+    setModelsError('')
+    setModelsLoading(false)
     setModalOpen(true)
   }
+
+  useEffect(() => {
+    if (!openCreateIntegration) return
+
+    const timer = window.setTimeout(() => {
+      setEditingIntegration(null)
+      setForm({
+        ...emptyForm,
+        provider: '',
+        policy_name: policyOptions[0] || '',
+        models: [],
+      })
+      setFormError('')
+      setAvailableModels([])
+      setModelsError('')
+      setModelsLoading(false)
+      setModalOpen(true)
+    }, 0)
+
+    return () => window.clearTimeout(timer)
+  }, [openCreateIntegration, policyOptions])
 
   const openEditModal = (integration) => {
     setEditingIntegration(integration)
@@ -182,6 +207,9 @@ export default function IntegrationsPage({ currentUser, openCreateIntegration = 
       models: integration.models,
     })
     setFormError('')
+    setAvailableModels([])
+    setModelsError('')
+    setModelsLoading(false)
     setModalOpen(true)
   }
 
@@ -191,6 +219,9 @@ export default function IntegrationsPage({ currentUser, openCreateIntegration = 
     setEditingIntegration(null)
     setForm(emptyForm)
     setFormError('')
+    setAvailableModels([])
+    setModelsError('')
+    setModelsLoading(false)
     if (window.location.hash === '#integrations?modal=add') {
       window.location.hash = 'integrations'
     }
@@ -202,16 +233,15 @@ export default function IntegrationsPage({ currentUser, openCreateIntegration = 
   }
 
   const selectProvider = (providerId) => {
-    setForm((current) => {
-      const allowedModels = new Set(
-        (providerMap[providerId]?.models || []).map((model) => model.toLowerCase()),
-      )
-      return {
-        ...current,
-        provider: providerId,
-        models: current.models.filter((model) => allowedModels.has(model.toLowerCase())),
-      }
-    })
+    setForm((current) => ({
+      ...current,
+      provider: providerId,
+      api_key: '',
+      models: [],
+    }))
+    setAvailableModels([])
+    setModelsError('')
+    setModelsLoading(false)
   }
 
   const toggleModel = (modelName) => {
@@ -279,6 +309,97 @@ export default function IntegrationsPage({ currentUser, openCreateIntegration = 
       setDeletingIntegrationId('')
     }
   }
+
+  const loadAvailableModels = async (force = false) => {
+    if (!form.provider) {
+      setModelsError('Select a provider first')
+      return
+    }
+
+    if (form.provider !== 'ollama' && !form.api_key.trim()) {
+      setModelsError('Enter the API key first')
+      return
+    }
+
+    if (!force && modelsLoading) {
+      return
+    }
+
+    setModelsLoading(true)
+    setModelsError('')
+
+    try {
+      const response = await fetchAvailableLLMModels({
+        provider: form.provider,
+        api_key: form.api_key,
+      })
+      setAvailableModels(response.models || [])
+      setForm((current) => {
+        const allowed = new Set((response.models || []).map((model) => model.toLowerCase()))
+        const preserved = current.models.filter((model) => allowed.has(model.toLowerCase()))
+        return {
+          ...current,
+          models: preserved,
+        }
+      })
+    } catch (requestError) {
+      setAvailableModels([])
+      setModelsError(requestError.message)
+    } finally {
+      setModelsLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    if (!modalOpen || !form.provider) return
+    if (form.provider !== 'ollama' && !form.api_key.trim()) return
+
+    let active = true
+
+    async function loadAvailableModelsOnTimer() {
+      if (modelsLoading) {
+        return
+      }
+
+      setModelsLoading(true)
+      setModelsError('')
+
+      try {
+        const response = await fetchAvailableLLMModels({
+          provider: form.provider,
+          api_key: form.api_key,
+        })
+        if (!active) return
+
+        setAvailableModels(response.models || [])
+        setForm((current) => {
+          const allowed = new Set((response.models || []).map((model) => model.toLowerCase()))
+          const preserved = current.models.filter((model) => allowed.has(model.toLowerCase()))
+          return {
+            ...current,
+            models: preserved,
+          }
+        })
+      } catch (requestError) {
+        if (!active) return
+        setAvailableModels([])
+        setModelsError(requestError.message)
+      } finally {
+        if (active) {
+          setModelsLoading(false)
+        }
+      }
+    }
+
+    const timer = window.setTimeout(() => {
+      loadAvailableModelsOnTimer()
+    }, 450)
+
+    return () => {
+      active = false
+      window.clearTimeout(timer)
+    }
+  }, [form.provider, form.api_key, modalOpen, modelsLoading])
 
   const selectedProvider = providerMap[form.provider]
 
@@ -366,50 +487,57 @@ export default function IntegrationsPage({ currentUser, openCreateIntegration = 
                 </tr>
               </thead>
               <tbody>
-                {integrations.map((integration) => (
-                  <tr key={integration.id}>
-                    <td>
-                      <div className="integration-provider-inline">
-                        <span className={`integration-provider-logo xs tone-${providerMap[integration.provider]?.tone || 'slate'}`}>
-                          {providerMap[integration.provider]?.logo || 'AI'}
-                        </span>
-                        <span className="pill integration-provider-pill">
-                          {providerMap[integration.provider]?.label || integration.provider}
-                        </span>
-                      </div>
-                    </td>
-                    <td>
-                      <div className="font-medium">{integration.account_name}</div>
-                    </td>
-                    <td>{integration.policy_name}</td>
-                    <td>
-                      <div className="integration-model-list">
-                        {integration.models.map((model) => (
-                          <span className="integration-model-chip" key={`${integration.id}-${model}`}>
-                            {model}
+                {integrations.map((integration) => {
+                  const { visibleModels, hiddenCount, fullList } = getModelPreview(integration.models)
+
+                  return (
+                    <tr key={integration.id}>
+                      <td>
+                        <div className="integration-provider-inline">
+                          <span className={`integration-provider-logo xs tone-${providerMap[integration.provider]?.tone || 'slate'}`}>
+                            {providerMap[integration.provider]?.logo || 'AI'}
                           </span>
-                        ))}
-                      </div>
-                    </td>
-                    <td className="mono integration-secret-preview">{integration.masked_api_key}</td>
-                    <td className="mono">{formatDate(integration.updated_at)}</td>
-                    <td>
-                      <div className="users-table-actions">
-                        <button type="button" className="btn" onClick={() => openEditModal(integration)}>
-                          Update
-                        </button>
-                        <button
-                          type="button"
-                          className="btn"
-                          onClick={() => handleDelete(integration)}
-                          disabled={deletingIntegrationId === integration.id}
-                        >
-                          {deletingIntegrationId === integration.id ? 'Deleting...' : 'Delete'}
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
+                          <span className="pill integration-provider-pill">
+                            {providerMap[integration.provider]?.label || integration.provider}
+                          </span>
+                        </div>
+                      </td>
+                      <td>
+                        <div className="font-medium">{integration.account_name}</div>
+                      </td>
+                      <td>{integration.policy_name}</td>
+                      <td>
+                        <div className="integration-model-summary" title={fullList}>
+                          {visibleModels.map((model) => (
+                            <span className="integration-model-chip" key={`${integration.id}-${model}`}>
+                              {model}
+                            </span>
+                          ))}
+                          {hiddenCount > 0 ? (
+                            <span className="integration-model-chip more">+{hiddenCount} more</span>
+                          ) : null}
+                        </div>
+                      </td>
+                      <td className="mono integration-secret-preview">{integration.masked_api_key}</td>
+                      <td className="mono integration-updated-cell">{formatDate(integration.updated_at)}</td>
+                      <td>
+                        <div className="users-table-actions">
+                          <button type="button" className="btn" onClick={() => openEditModal(integration)}>
+                            Update
+                          </button>
+                          <button
+                            type="button"
+                            className="btn"
+                            onClick={() => handleDelete(integration)}
+                            disabled={deletingIntegrationId === integration.id}
+                          >
+                            {deletingIntegrationId === integration.id ? 'Deleting...' : 'Delete'}
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  )
+                })}
               </tbody>
             </table>
           )}
@@ -434,26 +562,42 @@ export default function IntegrationsPage({ currentUser, openCreateIntegration = 
             <form className="card-body users-form" onSubmit={handleSubmit}>
               <div className="field">
                 <span>Provider</span>
-                <div className="integration-provider-grid">
-                  {providerCatalog.map((provider) => (
-                    <button
-                      key={provider.id}
-                      type="button"
-                      className={`integration-provider-card tone-${provider.tone} ${form.provider === provider.id ? 'selected' : ''}`}
-                      onClick={() => selectProvider(provider.id)}
-                    >
-                      <div className="integration-provider-head">
-                        <div className={`integration-provider-logo tone-${provider.tone}`}>{provider.logo}</div>
-                        <div>
-                          <div className="integration-provider-name">{provider.label}</div>
-                          <div className="integration-provider-copy">
-                            {provider.models.length} selectable models
-                          </div>
+                {selectedProvider ? (
+                  <div className={`integration-provider-card selected tone-${selectedProvider.tone}`}>
+                    <div className="integration-provider-head">
+                      <div className={`integration-provider-logo tone-${selectedProvider.tone}`}>
+                        {selectedProvider.logo}
+                      </div>
+                      <div>
+                        <div className="integration-provider-name">{selectedProvider.label}</div>
+                        <div className="integration-provider-copy">
+                          Only {selectedProvider.label} models will be shown below
                         </div>
                       </div>
-                    </button>
-                  ))}
-                </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="integration-provider-grid">
+                    {providerCatalog.map((provider) => (
+                      <button
+                        key={provider.id}
+                        type="button"
+                        className={`integration-provider-card tone-${provider.tone} ${form.provider === provider.id ? 'selected' : ''}`}
+                        onClick={() => selectProvider(provider.id)}
+                      >
+                        <div className="integration-provider-head">
+                          <div className={`integration-provider-logo tone-${provider.tone}`}>{provider.logo}</div>
+                          <div>
+                            <div className="integration-provider-name">{provider.label}</div>
+                            <div className="integration-provider-copy">
+                              {provider.models.length} selectable models
+                            </div>
+                          </div>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
 
               <label className="field">
@@ -476,8 +620,13 @@ export default function IntegrationsPage({ currentUser, openCreateIntegration = 
                   type="password"
                   value={form.api_key}
                   onChange={updateField}
+                  onBlur={() => {
+                    if (form.provider) {
+                      loadAvailableModels(true)
+                    }
+                  }}
                   placeholder={editingIntegration ? 'Leave blank to keep current API key' : 'Paste provider API key'}
-                  required={!editingIntegration}
+                  required={!editingIntegration && form.provider !== 'ollama'}
                 />
               </label>
 
@@ -502,7 +651,7 @@ export default function IntegrationsPage({ currentUser, openCreateIntegration = 
                 <span>Models</span>
                 {selectedProvider ? (
                   <div className="integration-model-selector">
-                    {selectedProvider.models.map((model) => (
+                    {availableModels.map((model) => (
                       <label className="integration-model-option" key={model}>
                         <input
                           type="checkbox"
@@ -516,6 +665,15 @@ export default function IntegrationsPage({ currentUser, openCreateIntegration = 
                 ) : (
                   <div className="state-copy">Choose a provider to see its supported models.</div>
                 )}
+                {selectedProvider && availableModels.length === 0 && !modelsLoading ? (
+                  <div className="state-copy">
+                    {form.provider === 'ollama'
+                      ? 'Select Ollama and we will load local models automatically.'
+                      : 'Enter the provider API key to load available models.'}
+                  </div>
+                ) : null}
+                {modelsLoading ? <div className="state-copy">Loading available models…</div> : null}
+                {modelsError ? <div className="auth-error">{modelsError}</div> : null}
               </div>
 
               {formError ? <div className="auth-error">{formError}</div> : null}
