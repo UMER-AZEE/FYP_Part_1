@@ -4,9 +4,11 @@ from app.api.dependencies.auth import get_current_user
 from app.api.dependencies.services import get_auth_service
 from app.models.user import User
 from app.schemas.auth import (
+    AcceptInvitationRequest,
     AuthResponse,
     AuthenticatedUserRead,
     ForgotPasswordRequest,
+    InvitationDetailsResponse,
     LoginRequest,
     MessageResponse,
     PasswordResetPendingResponse,
@@ -68,6 +70,22 @@ def reset_password(
     auth_service: AuthService = Depends(get_auth_service),
 ) -> MessageResponse:
     return auth_service.reset_password(payload)
+
+
+@router.get('/invitation', response_model=InvitationDetailsResponse)
+def invitation_details(
+    token: str,
+    auth_service: AuthService = Depends(get_auth_service),
+) -> InvitationDetailsResponse:
+    return auth_service.get_invitation_details(token)
+
+
+@router.post('/accept-invitation', response_model=MessageResponse)
+def accept_invitation(
+    payload: AcceptInvitationRequest,
+    auth_service: AuthService = Depends(get_auth_service),
+) -> MessageResponse:
+    return auth_service.accept_invitation(payload)
 
 
 @router.get('/me', response_model=AuthenticatedUserRead)
