@@ -17,7 +17,7 @@ async def lifespan(_: FastAPI):
 
 
 def create_application() -> FastAPI:
-    app = FastAPI(title='Centurion API', lifespan=lifespan)
+    app = FastAPI(title='Sentinel AI API', lifespan=lifespan)
     app.add_middleware(
         CORSMiddleware,
         allow_origins=CORS_ORIGINS or ['*'],
