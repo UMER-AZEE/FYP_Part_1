@@ -5,6 +5,13 @@ export async function fetchLLMIntegrations() {
   return payload.integrations || []
 }
 
+export async function fetchAvailableLLMModels(formData) {
+  return apiRequest('/integrations/available-models', {
+    method: 'POST',
+    body: JSON.stringify(formData),
+  })
+}
+
 export async function createLLMIntegration(formData) {
   return apiRequest('/integrations', {
     method: 'POST',
