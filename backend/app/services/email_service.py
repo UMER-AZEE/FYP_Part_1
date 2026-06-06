@@ -4,6 +4,8 @@ from dataclasses import dataclass
 from email.message import EmailMessage
 
 from app.core.config import (
+    FRONTEND_APP_URL,
+    INVITATION_EXPIRE_HOURS,
     SMTP_ENABLED,
     SMTP_FROM_EMAIL,
     SMTP_FROM_NAME,
@@ -28,7 +30,7 @@ class EmailDeliveryResult:
 def verification_message(verification_code: str) -> str:
     return '\n'.join(
         [
-            'Your Centurion verification code is below.',
+            'Your Sentinel AI verification code is below.',
             '',
             f'Code: {verification_code}',
             '',
@@ -41,12 +43,26 @@ def verification_message(verification_code: str) -> str:
 def password_reset_message(verification_code: str) -> str:
     return '\n'.join(
         [
-            'Your Centurion password reset code is below.',
+            'Your Sentinel AI password reset code is below.',
             '',
             f'Code: {verification_code}',
             '',
             'This code expires in 10 minutes.',
             'If you did not request a password reset, you can ignore this email.',
+        ]
+    )
+
+
+def invitation_message(invitation_link: str, company_name: str) -> str:
+    return '\n'.join(
+        [
+            f'You have been invited to join {company_name} on Sentinel AI.',
+            '',
+            'Open the link below to set your password and activate your account:',
+            invitation_link,
+            '',
+            f'This invitation link expires in {INVITATION_EXPIRE_HOURS} hours.',
+            'If you were not expecting this invitation, you can ignore this email.',
         ]
     )
 
@@ -61,6 +77,19 @@ def send_email_with_code(
         logger.info('SMTP not configured – console email delivery for %s\n%s\n%s', recipient_email, subject, text_message)
         return EmailDeliveryResult(delivered=False, mode='console')
 
+    return send_email_via_smtp(
+        recipient_email,
+        subject=subject,
+        text_message=text_message,
+    )
+
+
+def send_email_via_smtp(
+    recipient_email: str,
+    *,
+    subject: str,
+    text_message: str,
+) -> EmailDeliveryResult:
     message = EmailMessage()
     message['Subject'] = subject
     message['From'] = f'{SMTP_FROM_NAME} <{SMTP_FROM_EMAIL}>'
@@ -92,7 +121,7 @@ def send_email_with_code(
 def send_verification_email(recipient_email: str, verification_code: str) -> EmailDeliveryResult:
     return send_email_with_code(
         recipient_email,
-        subject='Verify your Centurion account',
+        subject='Verify your Sentinel AI account',
         text_message=verification_message(verification_code),
     )
 
@@ -100,6 +129,19 @@ def send_verification_email(recipient_email: str, verification_code: str) -> Ema
 def send_password_reset_email(recipient_email: str, verification_code: str) -> EmailDeliveryResult:
     return send_email_with_code(
         recipient_email,
-        subject='Reset your Centurion password',
+        subject='Reset your Sentinel AI password',
         text_message=password_reset_message(verification_code),
+    )
+
+
+def build_invitation_link(token: str) -> str:
+    return f'{FRONTEND_APP_URL}/#accept-invite?token={token}'
+
+
+def send_invitation_email(recipient_email: str, token: str, company_name: str) -> EmailDeliveryResult:
+    invitation_link = build_invitation_link(token)
+    return send_email_with_code(
+        recipient_email,
+        subject=f'You have been invited to {company_name} on Sentinel AI',
+        text_message=invitation_message(invitation_link, company_name),
     )
