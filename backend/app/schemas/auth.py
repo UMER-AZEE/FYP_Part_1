@@ -37,6 +37,12 @@ class ResetPasswordRequest(BaseModel):
     confirm_password: str = Field(min_length=8, max_length=128)
 
 
+class AcceptInvitationRequest(BaseModel):
+    token: str = Field(min_length=20, max_length=255)
+    password: str = Field(min_length=8, max_length=128)
+    confirm_password: str = Field(min_length=8, max_length=128)
+
+
 class UserRead(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
@@ -44,7 +50,11 @@ class UserRead(BaseModel):
     first_name: str
     last_name: str
     email: str
+    department: str
+    role: str
+    groups: list[str]
     is_email_verified: bool
+    account_status: str
     created_at: datetime
 
 
@@ -83,3 +93,12 @@ class PasswordResetPendingResponse(BaseModel):
 
 class MessageResponse(BaseModel):
     message: str
+
+
+class InvitationDetailsResponse(BaseModel):
+    email: str
+    first_name: str
+    last_name: str
+    department: str
+    role: str
+    company_name: str
