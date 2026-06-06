@@ -26,6 +26,42 @@ class UserRepository:
         self.collection = database.users
         self.company_repository = company_repository
 
+    @staticmethod
+    def _object_id(value: str) -> ObjectId:
+        return ObjectId(value)
+
+    @staticmethod
+    def _sort_key(user: User) -> tuple[str, str, str]:
+        return (user.first_name.lower(), user.last_name.lower(), user.email.lower())
+
+    def _to_document(self, user: User) -> dict:
+        return {
+            'full_name': user.full_name,
+            'first_name': user.first_name,
+            'last_name': user.last_name,
+            'email': user.email,
+            'department': user.department,
+            'role': user.role,
+            'groups': list(user.groups),
+            'password_hash': user.password_hash,
+            'company_id': self._object_id(user.company.id),
+            'is_email_verified': user.is_email_verified,
+            'invitation_token_hash': user.invitation_token_hash,
+            'invitation_expires_at': user.invitation_expires_at,
+            'invited_at': user.invited_at,
+            'email_verification_code_hash': user.email_verification_code_hash,
+            'email_verification_expires_at': user.email_verification_expires_at,
+            'email_verification_sent_at': user.email_verification_sent_at,
+            'email_verification_delivery_mode': user.email_verification_delivery_mode,
+            'email_verification_attempts': user.email_verification_attempts,
+            'password_reset_code_hash': user.password_reset_code_hash,
+            'password_reset_expires_at': user.password_reset_expires_at,
+            'password_reset_sent_at': user.password_reset_sent_at,
+            'password_reset_delivery_mode': user.password_reset_delivery_mode,
+            'password_reset_attempts': user.password_reset_attempts,
+            'created_at': user.created_at,
+        }
+
     def _to_model(self, document: dict | None) -> User | None:
         if document is None:
             return None
@@ -40,9 +76,15 @@ class UserRepository:
             first_name=document['first_name'],
             last_name=document['last_name'],
             email=document['email'],
+            department=document.get('department', ''),
+            role=document.get('role', 'Employee'),
+            groups=list(document.get('groups', [])),
             password_hash=document['password_hash'],
             company=company,
             is_email_verified=document.get('is_email_verified', False),
+            invitation_token_hash=document.get('invitation_token_hash'),
+            invitation_expires_at=_ensure_utc(document.get('invitation_expires_at')),
+            invited_at=_ensure_utc(document.get('invited_at')),
             email_verification_code_hash=document.get('email_verification_code_hash'),
             email_verification_expires_at=_ensure_utc(document.get('email_verification_expires_at')),
             email_verification_sent_at=_ensure_utc(document.get('email_verification_sent_at')),
@@ -59,54 +101,29 @@ class UserRepository:
     def find_by_email(self, email: str) -> User | None:
         return self._to_model(self.collection.find_one({'email': email}))
 
+    def find_by_id(self, user_id: str) -> User | None:
+        return self._to_model(self.collection.find_one({'_id': self._object_id(user_id)}))
+
+    def find_by_invitation_token_hash(self, invitation_token_hash: str) -> User | None:
+        return self._to_model(self.collection.find_one({'invitation_token_hash': invitation_token_hash}))
+
+    def list_by_company_id(self, company_id: str) -> list[User]:
+        documents = self.collection.find({'company_id': self._object_id(company_id)})
+        users = [self._to_model(document) for document in documents]
+        return sorted([user for user in users if user is not None], key=self._sort_key)
+
     def create(self, user: User) -> User:
-        payload = {
-            'full_name': user.full_name,
-            'first_name': user.first_name,
-            'last_name': user.last_name,
-            'email': user.email,
-            'password_hash': user.password_hash,
-            'company_id': ObjectId(user.company.id),
-            'is_email_verified': user.is_email_verified,
-            'email_verification_code_hash': user.email_verification_code_hash,
-            'email_verification_expires_at': user.email_verification_expires_at,
-            'email_verification_sent_at': user.email_verification_sent_at,
-            'email_verification_delivery_mode': user.email_verification_delivery_mode,
-            'email_verification_attempts': user.email_verification_attempts,
-            'password_reset_code_hash': user.password_reset_code_hash,
-            'password_reset_expires_at': user.password_reset_expires_at,
-            'password_reset_sent_at': user.password_reset_sent_at,
-            'password_reset_delivery_mode': user.password_reset_delivery_mode,
-            'password_reset_attempts': user.password_reset_attempts,
-            'created_at': user.created_at,
-        }
-        result = self.collection.insert_one(payload)
+        result = self.collection.insert_one(self._to_document(user))
         user.id = str(result.inserted_id)
         return user
 
     def save(self, user: User) -> User:
         self.collection.update_one(
-            {'_id': ObjectId(user.id)},
-            {
-                '$set': {
-                    'full_name': user.full_name,
-                    'first_name': user.first_name,
-                    'last_name': user.last_name,
-                    'email': user.email,
-                    'password_hash': user.password_hash,
-                    'company_id': ObjectId(user.company.id),
-                    'is_email_verified': user.is_email_verified,
-                    'email_verification_code_hash': user.email_verification_code_hash,
-                    'email_verification_expires_at': user.email_verification_expires_at,
-                    'email_verification_sent_at': user.email_verification_sent_at,
-                    'email_verification_delivery_mode': user.email_verification_delivery_mode,
-                    'email_verification_attempts': user.email_verification_attempts,
-                    'password_reset_code_hash': user.password_reset_code_hash,
-                    'password_reset_expires_at': user.password_reset_expires_at,
-                    'password_reset_sent_at': user.password_reset_sent_at,
-                    'password_reset_delivery_mode': user.password_reset_delivery_mode,
-                    'password_reset_attempts': user.password_reset_attempts,
-                }
-            },
+            {'_id': self._object_id(user.id)},
+            {'$set': self._to_document(user)},
         )
         return user
+
+    def delete(self, user_id: str) -> bool:
+        result = self.collection.delete_one({'_id': self._object_id(user_id)})
+        return bool(getattr(result, 'deleted_count', 0))
