@@ -20,6 +20,14 @@ def normalize_person_name(name: str) -> str:
     return ' '.join(name.strip().split())
 
 
+def normalize_department_name(name: str) -> str:
+    return ' '.join(name.strip().split())
+
+
+def normalize_role_name(name: str) -> str:
+    return ' '.join(name.strip().split())
+
+
 def slugify_company(company_name: str) -> str:
     slug = re.sub(r'[^a-z0-9]+', '-', company_name.lower()).strip('-')
     if not slug:
