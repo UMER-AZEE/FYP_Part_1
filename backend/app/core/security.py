@@ -49,6 +49,15 @@ def verify_password_reset_code(email: str, code: str, expected_hash: str | None)
     return secrets.compare_digest(hash_password_reset_code(email, code), expected_hash)
 
 
+def generate_invitation_token() -> str:
+    return secrets.token_urlsafe(32)
+
+
+def hash_invitation_token(token: str) -> str:
+    payload = f'{SECRET_KEY}:invite:{token}'.encode('utf-8')
+    return hashlib.sha256(payload).hexdigest()
+
+
 def create_access_token(subject: str, expires_delta: timedelta | None = None) -> str:
     expire = datetime.now(timezone.utc) + (
         expires_delta or timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
