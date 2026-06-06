@@ -35,6 +35,11 @@ class _InsertOneResult:
     inserted_id: ObjectId
 
 
+@dataclass(slots=True)
+class _DeleteResult:
+    deleted_count: int
+
+
 class _FallbackStore:
     def __init__(self, path: Path) -> None:
         self._path = path
@@ -130,6 +135,13 @@ class _FallbackCollection:
                 return copy.deepcopy(document)
         return None
 
+    def find(self, query: dict[str, Any]) -> list[dict[str, Any]]:
+        matches: list[dict[str, Any]] = []
+        for document in self._documents.values():
+            if self._matches(document, query):
+                matches.append(copy.deepcopy(document))
+        return matches
+
     def insert_one(self, document: dict[str, Any]) -> _InsertOneResult:
         stored_document = copy.deepcopy(document)
         inserted_id = stored_document.get('_id', ObjectId())
@@ -149,6 +161,14 @@ class _FallbackCollection:
                     self._documents[document_id] = updated_document
                     self._store.save()
                 return
+
+    def delete_one(self, query: dict[str, Any]) -> _DeleteResult:
+        for document_id, document in list(self._documents.items()):
+            if self._matches(document, query):
+                del self._documents[document_id]
+                self._store.save()
+                return _DeleteResult(deleted_count=1)
+        return _DeleteResult(deleted_count=0)
 
 
 class _FallbackDatabase:
