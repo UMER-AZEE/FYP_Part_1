@@ -5,6 +5,7 @@ from fastapi import HTTPException, status
 from pymongo.errors import DuplicateKeyError
 
 from app.core.config import (
+    INVITATION_EXPIRE_HOURS,
     PASSWORD_RESET_CODE_EXPIRE_MINUTES,
     PASSWORD_RESET_MAX_ATTEMPTS,
     PASSWORD_RESET_RESEND_COOLDOWN_SECONDS,
@@ -15,21 +16,25 @@ from app.core.config import (
 from app.core.security import (
     create_access_token,
     decode_access_token,
+    generate_invitation_token,
     generate_verification_code,
+    hash_invitation_token,
     hash_password,
     hash_password_reset_code,
     hash_verification_code,
     verify_email_code,
-    verify_password_reset_code,
     verify_password,
+    verify_password_reset_code,
 )
 from app.models.user import User
 from app.repositories.company_repository import CompanyRepository
 from app.repositories.user_repository import UserRepository
 from app.schemas.auth import (
+    AcceptInvitationRequest,
     AuthResponse,
     AuthenticatedUserRead,
     ForgotPasswordRequest,
+    InvitationDetailsResponse,
     LoginRequest,
     MessageResponse,
     PasswordResetPendingResponse,
@@ -46,7 +51,9 @@ from app.services.email_service import (
 )
 from app.utils.normalizers import (
     normalize_company_name,
+    normalize_department_name,
     normalize_email,
+    normalize_role_name,
     normalize_person_name,
     slugify_company,
     validate_email,
@@ -96,6 +103,21 @@ class AuthService:
         user.password_reset_sent_at = None
         user.password_reset_delivery_mode = None
         user.password_reset_attempts = 0
+
+    @staticmethod
+    def clear_invitation_state(user: User) -> None:
+        user.invitation_token_hash = None
+        user.invitation_expires_at = None
+        user.invited_at = None
+
+    @staticmethod
+    def prepare_invitation(user: User) -> str:
+        token = generate_invitation_token()
+        issued_at = now_utc()
+        user.invitation_token_hash = hash_invitation_token(token)
+        user.invitation_expires_at = issued_at + timedelta(hours=INVITATION_EXPIRE_HOURS)
+        user.invited_at = issued_at
+        return token
 
     @staticmethod
     def verification_pending_response(
@@ -209,6 +231,15 @@ class AuthService:
 
         return user
 
+    def get_invited_user(self, token: str) -> User:
+        invitation_token_hash = hash_invitation_token(token.strip())
+        user = self.user_repository.find_by_invitation_token_hash(invitation_token_hash)
+        if user is None:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Invitation not found')
+        if user.invitation_expires_at is None or user.invitation_expires_at < now_utc():
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='Invitation link has expired')
+        return user
+
     def signup(self, payload: SignupRequest) -> VerificationPendingResponse:
         email = normalize_email(payload.email)
         first_name = normalize_person_name(payload.first_name)
@@ -248,9 +279,14 @@ class AuthService:
             first_name=first_name,
             last_name=last_name,
             email=email,
+            department=normalize_department_name('Management'),
+            role=normalize_role_name('Manager'),
             password_hash=hash_password(payload.password),
             company=company,
             is_email_verified=False,
+            invitation_token_hash=None,
+            invitation_expires_at=None,
+            invited_at=None,
             email_verification_code_hash=None,
             email_verification_expires_at=None,
             email_verification_sent_at=None,
@@ -275,7 +311,9 @@ class AuthService:
         validate_email(email)
 
         user = self.user_repository.find_by_email(email)
-        if user is None or not verify_password(payload.password, user.password_hash):
+        if user is None or user.password_hash is None:
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Invalid email or password')
+        if not verify_password(payload.password, user.password_hash):
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Invalid email or password')
         if not user.is_email_verified:
             current_time = now_utc()
@@ -432,3 +470,30 @@ class AuthService:
         self.clear_password_reset_state(user)
         self.user_repository.save(user)
         return MessageResponse(message='Password reset successful. Please sign in with your new password.')
+
+    def get_invitation_details(self, token: str) -> InvitationDetailsResponse:
+        user = self.get_invited_user(token)
+        return InvitationDetailsResponse(
+            email=user.email,
+            first_name=user.first_name,
+            last_name=user.last_name,
+            department=user.department,
+            role=user.role,
+            company_name=user.company.name,
+        )
+
+    def accept_invitation(self, payload: AcceptInvitationRequest) -> MessageResponse:
+        if payload.password != payload.confirm_password:
+            raise HTTPException(
+                status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                detail='Password and confirm password must match',
+            )
+
+        user = self.get_invited_user(payload.token)
+        user.password_hash = hash_password(payload.password)
+        user.is_email_verified = True
+        self.clear_invitation_state(user)
+        self.clear_verification_state(user)
+        self.clear_password_reset_state(user)
+        self.user_repository.save(user)
+        return MessageResponse(message='Invitation accepted. You can now sign in to your account.')
