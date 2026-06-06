@@ -55,7 +55,7 @@ export default function VerifyEmailPage({
 
   return (
     <AuthShell
-      eyebrow="Centurion Verify"
+      eyebrow="Sentinel AI Verify"
       title="Confirm your email"
       subtitle="Enter the verification code from your inbox before the account can sign in."
       footer={(
