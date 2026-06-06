@@ -9,6 +9,16 @@ ENV_FILE = Path(__file__).resolve().parents[2] / '.env'
 load_dotenv(ENV_FILE)
 
 
+def clean_env_value(value: str | None, default: str = '') -> str:
+    if value is None:
+        return default
+
+    normalized = value.strip()
+    if len(normalized) >= 2 and normalized[0] == normalized[-1] and normalized[0] in {"'", '"'}:
+        normalized = normalized[1:-1].strip()
+    return normalized
+
+
 def normalize_mongodb_url(mongodb_url: str) -> str:
     if '://' not in mongodb_url or '@' not in mongodb_url:
         return mongodb_url
@@ -24,20 +34,31 @@ def normalize_mongodb_url(mongodb_url: str) -> str:
     return f'{scheme}://{encoded_username}:{encoded_password}@{host_and_path}'
 
 
-ENVIRONMENT = os.getenv('ENVIRONMENT', os.getenv('APP_ENV', 'development')).strip().lower()
+def resolve_mongodb_url() -> str:
+    explicit_mongodb_url = clean_env_value(os.getenv('MONGODB_URL'))
+    if explicit_mongodb_url:
+        return normalize_mongodb_url(explicit_mongodb_url)
+
+    database_url = clean_env_value(os.getenv('DATABASE_URL'))
+    if database_url.startswith(('mongodb://', 'mongodb+srv://')):
+        return normalize_mongodb_url(database_url)
+
+    return 'mongodb://127.0.0.1:27017/centurion'
+
+
+ENVIRONMENT = clean_env_value(os.getenv('ENVIRONMENT', os.getenv('APP_ENV', 'development')), 'development').lower()
 IS_PRODUCTION = ENVIRONMENT == 'production'
 DEFAULT_SECRET_KEY = 'change-this-secret-before-production'
-SECRET_KEY = os.getenv('SECRET_KEY', DEFAULT_SECRET_KEY)
+SECRET_KEY = clean_env_value(os.getenv('SECRET_KEY'), DEFAULT_SECRET_KEY)
 ALGORITHM = 'HS256'
 ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv('ACCESS_TOKEN_EXPIRE_MINUTES', '60'))
+INVITATION_EXPIRE_HOURS = int(os.getenv('INVITATION_EXPIRE_HOURS', '72'))
 
-MONGODB_URL = normalize_mongodb_url(
-    os.getenv('MONGODB_URL') or os.getenv('DATABASE_URL') or 'mongodb://127.0.0.1:27017/centurion'
-)
-MONGODB_DB_NAME = os.getenv('MONGODB_DB_NAME', 'centurion').strip() or 'centurion'
-DATABASE_MODE = os.getenv('DATABASE_MODE', 'auto').strip().lower() or 'auto'
+MONGODB_URL = resolve_mongodb_url()
+MONGODB_DB_NAME = clean_env_value(os.getenv('MONGODB_DB_NAME'), 'centurion') or 'centurion'
+DATABASE_MODE = clean_env_value(os.getenv('DATABASE_MODE'), 'auto').lower() or 'auto'
 FALLBACK_DB_PATH = Path(
-    os.getenv('FALLBACK_DB_PATH', str(Path(__file__).resolve().parents[2] / 'app.db'))
+    clean_env_value(os.getenv('FALLBACK_DB_PATH'), str(Path(__file__).resolve().parents[2] / 'app.db'))
 ).expanduser()
 MONGODB_SERVER_SELECTION_TIMEOUT_MS = int(
     os.getenv('MONGODB_SERVER_SELECTION_TIMEOUT_MS', '2000')
@@ -54,19 +75,23 @@ PASSWORD_RESET_RESEND_COOLDOWN_SECONDS = int(
     os.getenv('PASSWORD_RESET_RESEND_COOLDOWN_SECONDS', '60')
 )
 PASSWORD_RESET_MAX_ATTEMPTS = int(os.getenv('PASSWORD_RESET_MAX_ATTEMPTS', '5'))
-SMTP_HOST = os.getenv('SMTP_HOST', '')
+SMTP_HOST = clean_env_value(os.getenv('SMTP_HOST'))
 SMTP_PORT = int(os.getenv('SMTP_PORT', '587'))
-SMTP_USERNAME = os.getenv('SMTP_USERNAME', '')
-SMTP_PASSWORD = os.getenv('SMTP_PASSWORD', '')
-SMTP_FROM_EMAIL = os.getenv('SMTP_FROM_EMAIL', '')
-SMTP_FROM_NAME = os.getenv('SMTP_FROM_NAME', 'Centurion')
-SMTP_USE_TLS = os.getenv('SMTP_USE_TLS', 'true').strip().lower() in {'1', 'true', 'yes', 'on'}
-SMTP_USE_SSL = os.getenv('SMTP_USE_SSL', 'false').strip().lower() in {'1', 'true', 'yes', 'on'}
+SMTP_USERNAME = clean_env_value(os.getenv('SMTP_USERNAME'))
+SMTP_PASSWORD = clean_env_value(os.getenv('SMTP_PASSWORD'))
+SMTP_FROM_EMAIL = clean_env_value(os.getenv('SMTP_FROM_EMAIL'))
+SMTP_FROM_NAME = clean_env_value(os.getenv('SMTP_FROM_NAME'), 'Sentinel AI')
+SMTP_USE_TLS = clean_env_value(os.getenv('SMTP_USE_TLS'), 'true').lower() in {'1', 'true', 'yes', 'on'}
+SMTP_USE_SSL = clean_env_value(os.getenv('SMTP_USE_SSL'), 'false').lower() in {'1', 'true', 'yes', 'on'}
 SMTP_ENABLED = bool(SMTP_HOST and SMTP_USERNAME and SMTP_PASSWORD and SMTP_FROM_EMAIL)
+FRONTEND_APP_URL = (
+    clean_env_value(os.getenv('FRONTEND_APP_URL'), 'http://localhost:5173').rstrip('/')
+    or 'http://localhost:5173'
+)
 CORS_ORIGINS = [
     origin.strip()
-    for origin in os.getenv(
-        'CORS_ORIGINS',
+    for origin in clean_env_value(
+        os.getenv('CORS_ORIGINS'),
         'http://localhost:5173,http://127.0.0.1:5173',
     ).split(',')
     if origin.strip()
