@@ -86,7 +86,7 @@ export default function AcceptInvitePage({ token, onGoToLogin }) {
 
   return (
     <AuthShell
-      eyebrow="Centurion Invite"
+      eyebrow="Sentinel AI Invite"
       title="Activate your invited account"
       subtitle="Set a password to join your company workspace and access the application."
       footer={(
