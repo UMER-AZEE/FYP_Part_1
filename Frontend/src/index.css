@@ -86,7 +86,7 @@
   .brand {
     display: flex;
     align-items: center;
-    gap: 9px;
+    gap: 10px;
     border-bottom: 1px solid var(--line-2);
     padding: 16px 16px 14px;
   }
