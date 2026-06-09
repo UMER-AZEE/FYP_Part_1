@@ -93,8 +93,8 @@
 
   .brand-mark {
     display: grid;
-    height: 26px;
-    width: 26px;
+    height: 28px;
+    width: 28px;
     place-items: center;
     border-radius: 7px;
     background: linear-gradient(135deg, var(--ink) 0%, var(--ink-2) 100%);
