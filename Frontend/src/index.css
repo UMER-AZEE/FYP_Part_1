@@ -11,7 +11,7 @@
   :root {
     --bg: oklch(0.986 0.004 85);
     --panel: oklch(1 0 0);
-    --panel-2: oklch(0.975 0.004 80);
+    --panel-2: oklch(0.976 0.004 85);
     --line: oklch(0.915 0.005 80);
     --line-2: oklch(0.94 0.004 80);
     --ink: oklch(0.22 0.01 260);
