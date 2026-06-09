@@ -312,7 +312,7 @@
   }
 
   .btn.primary {
-    background: var(--ink);
+    background: linear-gradient(135deg, var(--ink), var(--ink-2));
     border-color: var(--ink);
     color: white;
   }
