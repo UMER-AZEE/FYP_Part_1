@@ -295,7 +295,7 @@
   .btn {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
+    gap: 7px;
     border: 1px solid var(--line);
     border-radius: var(--radius-sm);
     background: var(--panel);
