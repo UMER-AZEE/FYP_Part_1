@@ -433,7 +433,7 @@
   .auth-card {
     width: min(100%, 460px);
     border: 1px solid var(--line);
-    border-radius: 18px;
+    border-radius: 16px;
     background: oklch(1 0 0 / 0.94);
     box-shadow: 0 24px 60px oklch(0.24 0.02 260 / 0.08);
     padding: 28px;
