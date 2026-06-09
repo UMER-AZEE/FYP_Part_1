@@ -246,7 +246,7 @@
     gap: 14px;
     border-bottom: 1px solid var(--line);
     background: var(--panel);
-    padding: 0 22px;
+    padding: 0 24px;
   }
 
   .crumb {
