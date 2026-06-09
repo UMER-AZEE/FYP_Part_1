@@ -96,7 +96,7 @@
     height: 28px;
     width: 28px;
     place-items: center;
-    border-radius: 7px;
+    border-radius: 6px;
     background: linear-gradient(135deg, var(--ink) 0%, var(--ink-2) 100%);
     color: white;
     font-size: 13px;
