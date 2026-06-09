@@ -270,7 +270,7 @@
 
   .search {
     display: flex;
-    width: 260px;
+    width: 280px;
     align-items: center;
     gap: 8px;
     border: 1px solid var(--line);
