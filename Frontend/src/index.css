@@ -137,7 +137,7 @@
     display: flex;
     cursor: pointer;
     align-items: center;
-    gap: 10px;
+    gap: 9px;
     border-radius: var(--radius-sm);
     padding: 7px 10px;
     font-size: 12.5px;
