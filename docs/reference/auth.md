@@ -12,3 +12,13 @@ Source: `backend/app/api/routes/auth.py`. This page records callable signatures,
 
 **Key calls:** `router.post`, `Depends`, `auth_service.signup`.
 
+## `login`
+
+**Source:** `backend/app/api/routes/auth.py`
+
+**Signature:** `login(payload: LoginRequest, auth_service: AuthService=Depends(get_auth_service)) -> AuthResponse | VerificationPendingResponse`
+
+**Route:** `POST /login`
+
+**Key calls:** `router.post`, `Depends`, `auth_service.login`.
+
