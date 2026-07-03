@@ -22,3 +22,13 @@ Source: `backend/app/api/routes/auth.py`. This page records callable signatures,
 
 **Key calls:** `router.post`, `Depends`, `auth_service.login`.
 
+## `verify_email`
+
+**Source:** `backend/app/api/routes/auth.py`
+
+**Signature:** `verify_email(payload: VerificationRequest, auth_service: AuthService=Depends(get_auth_service)) -> AuthResponse`
+
+**Route:** `POST /verify-email`
+
+**Key calls:** `router.post`, `Depends`, `auth_service.verify_email`.
+
