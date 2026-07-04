@@ -32,3 +32,13 @@ Source: `backend/app/api/routes/auth.py`. This page records callable signatures,
 
 **Key calls:** `router.post`, `Depends`, `auth_service.verify_email`.
 
+## `resend_verification`
+
+**Source:** `backend/app/api/routes/auth.py`
+
+**Signature:** `resend_verification(payload: ResendVerificationRequest, auth_service: AuthService=Depends(get_auth_service)) -> VerificationPendingResponse`
+
+**Route:** `POST /resend-verification`
+
+**Key calls:** `router.post`, `Depends`, `auth_service.resend_verification`.
+
