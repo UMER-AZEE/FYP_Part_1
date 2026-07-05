@@ -42,3 +42,13 @@ Source: `backend/app/api/routes/auth.py`. This page records callable signatures,
 
 **Key calls:** `router.post`, `Depends`, `auth_service.resend_verification`.
 
+## `forgot_password`
+
+**Source:** `backend/app/api/routes/auth.py`
+
+**Signature:** `forgot_password(payload: ForgotPasswordRequest, auth_service: AuthService=Depends(get_auth_service)) -> PasswordResetPendingResponse`
+
+**Route:** `POST /forgot-password`
+
+**Key calls:** `router.post`, `Depends`, `auth_service.forgot_password`.
+
