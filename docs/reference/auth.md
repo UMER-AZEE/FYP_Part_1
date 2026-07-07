@@ -62,3 +62,13 @@ Source: `backend/app/api/routes/auth.py`. This page records callable signatures,
 
 **Key calls:** `router.post`, `Depends`, `auth_service.reset_password`.
 
+## `invitation_details`
+
+**Source:** `backend/app/api/routes/auth.py`
+
+**Signature:** `invitation_details(token: str, auth_service: AuthService=Depends(get_auth_service)) -> InvitationDetailsResponse`
+
+**Route:** `GET /invitation`
+
+**Key calls:** `router.get`, `Depends`, `auth_service.get_invitation_details`.
+
