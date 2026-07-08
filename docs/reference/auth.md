@@ -72,3 +72,13 @@ Source: `backend/app/api/routes/auth.py`. This page records callable signatures,
 
 **Key calls:** `router.get`, `Depends`, `auth_service.get_invitation_details`.
 
+## `accept_invitation`
+
+**Source:** `backend/app/api/routes/auth.py`
+
+**Signature:** `accept_invitation(payload: AcceptInvitationRequest, auth_service: AuthService=Depends(get_auth_service)) -> MessageResponse`
+
+**Route:** `POST /accept-invitation`
+
+**Key calls:** `router.post`, `Depends`, `auth_service.accept_invitation`.
+
