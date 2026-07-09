@@ -82,3 +82,13 @@ Source: `backend/app/api/routes/auth.py`. This page records callable signatures,
 
 **Key calls:** `router.post`, `Depends`, `auth_service.accept_invitation`.
 
+## `me`
+
+**Source:** `backend/app/api/routes/auth.py`
+
+**Signature:** `me(current_user: User=Depends(get_current_user)) -> AuthenticatedUserRead`
+
+**Route:** `GET /me`
+
+**Key calls:** `router.get`, `Depends`, `AuthenticatedUserRead.model_validate`.
+
