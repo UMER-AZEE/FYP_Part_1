@@ -22,3 +22,13 @@ Source: `backend/app/api/routes/integrations.py`. This page records callable sig
 
 **Key calls:** `router.post`, `Depends`, `llm_integration_service.fetch_available_models`.
 
+## `create_integration`
+
+**Source:** `backend/app/api/routes/integrations.py`
+
+**Signature:** `create_integration(payload: LLMIntegrationCreateRequest, current_user: User=Depends(get_current_user), llm_integration_service: LLMIntegrationService=Depends(get_llm_integration_service)) -> LLMIntegrationMutationResponse`
+
+**Route:** `POST `
+
+**Key calls:** `router.post`, `Depends`, `llm_integration_service.create_integration`.
+
