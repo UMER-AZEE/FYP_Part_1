@@ -32,3 +32,13 @@ Source: `backend/app/api/routes/integrations.py`. This page records callable sig
 
 **Key calls:** `router.post`, `Depends`, `llm_integration_service.create_integration`.
 
+## `update_integration`
+
+**Source:** `backend/app/api/routes/integrations.py`
+
+**Signature:** `update_integration(integration_id: str, payload: LLMIntegrationUpdateRequest, current_user: User=Depends(get_current_user), llm_integration_service: LLMIntegrationService=Depends(get_llm_integration_service)) -> LLMIntegrationMutationResponse`
+
+**Route:** `PUT /{integration_id}`
+
+**Key calls:** `router.put`, `Depends`, `llm_integration_service.update_integration`.
+
