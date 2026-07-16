@@ -42,3 +42,13 @@ Source: `backend/app/api/routes/integrations.py`. This page records callable sig
 
 **Key calls:** `router.put`, `Depends`, `llm_integration_service.update_integration`.
 
+## `delete_integration`
+
+**Source:** `backend/app/api/routes/integrations.py`
+
+**Signature:** `delete_integration(integration_id: str, current_user: User=Depends(get_current_user), llm_integration_service: LLMIntegrationService=Depends(get_llm_integration_service)) -> MessageResponse`
+
+**Route:** `DELETE /{integration_id}`
+
+**Key calls:** `router.delete`, `Depends`, `llm_integration_service.delete_integration`, `MessageResponse`.
+
