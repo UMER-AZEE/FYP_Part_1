@@ -22,3 +22,13 @@ Source: `backend/app/api/routes/prompts.py`. This page records callable signatur
 
 **Key calls:** `router.get`, `Query`, `Depends`, `prompt_workspace_service.list_runs`.
 
+## `run_prompt`
+
+**Source:** `backend/app/api/routes/prompts.py`
+
+**Signature:** `run_prompt(payload: PromptRunExecuteRequest, current_user: User=Depends(get_current_user), prompt_workspace_service: PromptWorkspaceService=Depends(get_prompt_workspace_service)) -> PromptRunExecutionResponse`
+
+**Route:** `POST /run`
+
+**Key calls:** `router.post`, `Depends`, `prompt_workspace_service.run_prompt`.
+
