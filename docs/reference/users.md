@@ -22,3 +22,13 @@ Source: `backend/app/api/routes/users.py`. This page records callable signatures
 
 **Key calls:** `router.post`, `Depends`, `user_management_service.create_user`.
 
+## `update_user`
+
+**Source:** `backend/app/api/routes/users.py`
+
+**Signature:** `update_user(user_id: str, payload: ManagedUserUpdateRequest, current_user: User=Depends(get_current_user), user_management_service: UserManagementService=Depends(get_user_management_service)) -> ManagedUserMutationResponse`
+
+**Route:** `PUT /{user_id}`
+
+**Key calls:** `router.put`, `Depends`, `user_management_service.update_user`.
+
