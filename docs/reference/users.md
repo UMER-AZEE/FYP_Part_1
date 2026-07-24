@@ -32,3 +32,13 @@ Source: `backend/app/api/routes/users.py`. This page records callable signatures
 
 **Key calls:** `router.put`, `Depends`, `user_management_service.update_user`.
 
+## `delete_user`
+
+**Source:** `backend/app/api/routes/users.py`
+
+**Signature:** `delete_user(user_id: str, current_user: User=Depends(get_current_user), user_management_service: UserManagementService=Depends(get_user_management_service)) -> MessageResponse`
+
+**Route:** `DELETE /{user_id}`
+
+**Key calls:** `router.delete`, `Depends`, `user_management_service.delete_user`, `MessageResponse`.
+
