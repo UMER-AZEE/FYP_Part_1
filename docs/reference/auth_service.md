@@ -18,3 +18,9 @@ Source: `backend/app/services/auth_service.py`. This page records callable signa
 
 **Key calls:** `generate_verification_code`, `now_utc`, `hash_password_reset_code`, `timedelta`.
 
+## `AuthService.clear_verification_state`
+
+**Source:** `backend/app/services/auth_service.py`
+
+**Signature:** `clear_verification_state(user: User) -> None`
+
