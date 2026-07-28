@@ -24,3 +24,9 @@ Source: `backend/app/services/auth_service.py`. This page records callable signa
 
 **Signature:** `clear_verification_state(user: User) -> None`
 
+## `AuthService.clear_password_reset_state`
+
+**Source:** `backend/app/services/auth_service.py`
+
+**Signature:** `clear_password_reset_state(user: User) -> None`
+
