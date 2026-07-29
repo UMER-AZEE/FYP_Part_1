@@ -30,3 +30,9 @@ Source: `backend/app/services/auth_service.py`. This page records callable signa
 
 **Signature:** `clear_password_reset_state(user: User) -> None`
 
+## `AuthService.clear_invitation_state`
+
+**Source:** `backend/app/services/auth_service.py`
+
+**Signature:** `clear_invitation_state(user: User) -> None`
+
