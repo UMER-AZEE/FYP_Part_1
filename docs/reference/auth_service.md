@@ -36,3 +36,11 @@ Source: `backend/app/services/auth_service.py`. This page records callable signa
 
 **Signature:** `clear_invitation_state(user: User) -> None`
 
+## `AuthService.prepare_invitation`
+
+**Source:** `backend/app/services/auth_service.py`
+
+**Signature:** `prepare_invitation(user: User) -> str`
+
+**Key calls:** `generate_invitation_token`, `now_utc`, `hash_invitation_token`, `timedelta`.
+
