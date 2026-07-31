@@ -44,3 +44,11 @@ Source: `backend/app/services/auth_service.py`. This page records callable signa
 
 **Key calls:** `generate_invitation_token`, `now_utc`, `hash_invitation_token`, `timedelta`.
 
+## `AuthService.verification_pending_response`
+
+**Source:** `backend/app/services/auth_service.py`
+
+**Signature:** `verification_pending_response(email: str, message: str='A verification code has been sent to your email address', retry_after_seconds: int | None=None) -> VerificationPendingResponse`
+
+**Key calls:** `VerificationPendingResponse`.
+
