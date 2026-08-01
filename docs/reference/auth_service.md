@@ -52,3 +52,11 @@ Source: `backend/app/services/auth_service.py`. This page records callable signa
 
 **Key calls:** `VerificationPendingResponse`.
 
+## `AuthService.password_reset_pending_response`
+
+**Source:** `backend/app/services/auth_service.py`
+
+**Signature:** `password_reset_pending_response(email: str, message: str, retry_after_seconds: int | None=None) -> PasswordResetPendingResponse`
+
+**Key calls:** `PasswordResetPendingResponse`.
+
