@@ -60,3 +60,11 @@ Source: `backend/app/services/auth_service.py`. This page records callable signa
 
 **Key calls:** `PasswordResetPendingResponse`.
 
+## `AuthService.seconds_until_resend`
+
+**Source:** `backend/app/services/auth_service.py`
+
+**Signature:** `seconds_until_resend(user: User, current_time: datetime | None=None) -> int`
+
+**Key calls:** `(available_at - current_time).total_seconds`, `now_utc`, `timedelta`, `ceil`.
+
