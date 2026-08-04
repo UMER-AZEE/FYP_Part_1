@@ -76,3 +76,11 @@ Source: `backend/app/services/auth_service.py`. This page records callable signa
 
 **Key calls:** `(available_at - current_time).total_seconds`, `now_utc`, `timedelta`, `ceil`.
 
+## `AuthService.build_delivery_message`
+
+**Source:** `backend/app/services/auth_service.py`
+
+**Signature:** `build_delivery_message(verification_code: str, delivery_result: EmailDeliveryResult) -> str`
+
+**Returns expression:** `f'Email delivery is unavailable in this environment. Use verification code {verification_code} to continue.'`.
+
