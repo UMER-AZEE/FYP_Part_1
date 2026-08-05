@@ -84,3 +84,11 @@ Source: `backend/app/services/auth_service.py`. This page records callable signa
 
 **Returns expression:** `f'Email delivery is unavailable in this environment. Use verification code {verification_code} to continue.'`.
 
+## `AuthService.build_password_reset_delivery_message`
+
+**Source:** `backend/app/services/auth_service.py`
+
+**Signature:** `build_password_reset_delivery_message(verification_code: str, delivery_result: EmailDeliveryResult) -> str`
+
+**Returns expression:** `f'Email delivery is unavailable in this environment. Use password reset code {verification_code} to continue.'`.
+
