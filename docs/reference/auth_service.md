@@ -92,3 +92,11 @@ Source: `backend/app/services/auth_service.py`. This page records callable signa
 
 **Returns expression:** `f'Email delivery is unavailable in this environment. Use password reset code {verification_code} to continue.'`.
 
+## `AuthService.issue_verification_code`
+
+**Source:** `backend/app/services/auth_service.py`
+
+**Signature:** `issue_verification_code(self, user: User) -> VerificationPendingResponse`
+
+**Key calls:** `self.prepare_verification`, `send_verification_email`, `self.verification_pending_response`, `self.build_delivery_message`.
+
