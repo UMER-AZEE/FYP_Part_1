@@ -100,3 +100,11 @@ Source: `backend/app/services/auth_service.py`. This page records callable signa
 
 **Key calls:** `self.prepare_verification`, `send_verification_email`, `self.verification_pending_response`, `self.build_delivery_message`.
 
+## `AuthService.issue_password_reset_code`
+
+**Source:** `backend/app/services/auth_service.py`
+
+**Signature:** `issue_password_reset_code(self, user: User) -> PasswordResetPendingResponse`
+
+**Key calls:** `self.prepare_password_reset`, `send_password_reset_email`, `self.password_reset_pending_response`, `self.build_password_reset_delivery_message`.
+
