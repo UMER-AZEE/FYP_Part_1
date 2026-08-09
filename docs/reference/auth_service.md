@@ -116,3 +116,13 @@ Source: `backend/app/services/auth_service.py`. This page records callable signa
 
 **Key calls:** `AuthResponse`, `create_access_token`, `AuthenticatedUserRead.model_validate`.
 
+## `AuthService.get_current_user`
+
+**Source:** `backend/app/services/auth_service.py`
+
+**Signature:** `get_current_user(self, token: str) -> User`
+
+**Key calls:** `decode_access_token`, `normalize_email`, `self.user_repository.find_by_email`, `payload.get`.
+
+**Explicit HTTP errors:** "Invalid token subject"; "User no longer exists".
+
