@@ -126,3 +126,13 @@ Source: `backend/app/services/auth_service.py`. This page records callable signa
 
 **Explicit HTTP errors:** "Invalid token subject"; "User no longer exists".
 
+## `AuthService.get_invited_user`
+
+**Source:** `backend/app/services/auth_service.py`
+
+**Signature:** `get_invited_user(self, token: str) -> User`
+
+**Key calls:** `hash_invitation_token`, `self.user_repository.find_by_invitation_token_hash`, `token.strip`, `now_utc`.
+
+**Explicit HTTP errors:** "Invitation not found"; "Invitation link has expired".
+
