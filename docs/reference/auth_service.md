@@ -136,3 +136,13 @@ Source: `backend/app/services/auth_service.py`. This page records callable signa
 
 **Explicit HTTP errors:** "Invitation not found"; "Invitation link has expired".
 
+## `AuthService.signup`
+
+**Source:** `backend/app/services/auth_service.py`
+
+**Signature:** `signup(self, payload: SignupRequest) -> VerificationPendingResponse`
+
+**Key calls:** `normalize_email`, `normalize_person_name`, `normalize_company_name`, `validate_email`, `slugify_company`, `self.company_repository.find_by_slug`, `User`, `self.issue_verification_code`.
+
+**Explicit HTTP errors:** "Password and confirm password must match"; "First name is required"; "Last name is required"; "Company name is required"; "Email is already registered"; "Failed to create company".
+
