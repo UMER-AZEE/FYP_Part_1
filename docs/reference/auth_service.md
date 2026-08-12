@@ -146,3 +146,13 @@ Source: `backend/app/services/auth_service.py`. This page records callable signa
 
 **Explicit HTTP errors:** "Password and confirm password must match"; "First name is required"; "Last name is required"; "Company name is required"; "Email is already registered"; "Failed to create company".
 
+## `AuthService.login`
+
+**Source:** `backend/app/services/auth_service.py`
+
+**Signature:** `login(self, payload: LoginRequest) -> AuthResponse | VerificationPendingResponse`
+
+**Key calls:** `normalize_email`, `validate_email`, `self.user_repository.find_by_email`, `self.build_auth_response`, `verify_password`, `now_utc`, `self.seconds_until_resend`, `self.issue_verification_code`.
+
+**Explicit HTTP errors:** "Invalid email or password".
+
