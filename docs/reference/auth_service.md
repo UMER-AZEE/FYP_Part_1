@@ -156,3 +156,13 @@ Source: `backend/app/services/auth_service.py`. This page records callable signa
 
 **Explicit HTTP errors:** "Invalid email or password".
 
+## `AuthService.verify_email`
+
+**Source:** `backend/app/services/auth_service.py`
+
+**Signature:** `verify_email(self, payload: VerificationRequest) -> AuthResponse`
+
+**Key calls:** `normalize_email`, `self.user_repository.find_by_email`, `self.clear_verification_state`, `self.user_repository.save`, `self.build_auth_response`, `verify_email_code`, `now_utc`, `payload.code.strip`.
+
+**Explicit HTTP errors:** "User not found"; "Email is already verified. Please sign in."; "Verification code has expired"; "Too many invalid verification attempts. Request a new code."; "Invalid verification code".
+
