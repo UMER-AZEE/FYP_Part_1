@@ -166,3 +166,13 @@ Source: `backend/app/services/auth_service.py`. This page records callable signa
 
 **Explicit HTTP errors:** "User not found"; "Email is already verified. Please sign in."; "Verification code has expired"; "Too many invalid verification attempts. Request a new code."; "Invalid verification code".
 
+## `AuthService.resend_verification`
+
+**Source:** `backend/app/services/auth_service.py`
+
+**Signature:** `resend_verification(self, payload: ResendVerificationRequest) -> VerificationPendingResponse`
+
+**Key calls:** `normalize_email`, `validate_email`, `self.user_repository.find_by_email`, `self.seconds_until_resend`, `self.issue_verification_code`, `self.user_repository.save`.
+
+**Explicit HTTP errors:** "User not found"; "Email is already verified".
+
