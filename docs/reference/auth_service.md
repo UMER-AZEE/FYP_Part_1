@@ -176,3 +176,11 @@ Source: `backend/app/services/auth_service.py`. This page records callable signa
 
 **Explicit HTTP errors:** "User not found"; "Email is already verified".
 
+## `AuthService.forgot_password`
+
+**Source:** `backend/app/services/auth_service.py`
+
+**Signature:** `forgot_password(self, payload: ForgotPasswordRequest) -> PasswordResetPendingResponse`
+
+**Key calls:** `normalize_email`, `validate_email`, `self.user_repository.find_by_email`, `now_utc`, `self.seconds_until_password_reset_resend`, `self.issue_password_reset_code`, `self.user_repository.save`, `self.password_reset_pending_response`.
+
