@@ -184,3 +184,13 @@ Source: `backend/app/services/auth_service.py`. This page records callable signa
 
 **Key calls:** `normalize_email`, `validate_email`, `self.user_repository.find_by_email`, `now_utc`, `self.seconds_until_password_reset_resend`, `self.issue_password_reset_code`, `self.user_repository.save`, `self.password_reset_pending_response`.
 
+## `AuthService.reset_password`
+
+**Source:** `backend/app/services/auth_service.py`
+
+**Signature:** `reset_password(self, payload: ResetPasswordRequest) -> MessageResponse`
+
+**Key calls:** `normalize_email`, `validate_email`, `self.user_repository.find_by_email`, `hash_password`, `self.clear_password_reset_state`, `self.user_repository.save`, `MessageResponse`, `verify_password_reset_code`.
+
+**Explicit HTTP errors:** "Password and confirm password must match"; "User not found"; "Password reset code has expired"; "Too many invalid reset attempts. Request a new code."; "Invalid password reset code".
+
