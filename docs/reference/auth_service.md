@@ -194,3 +194,11 @@ Source: `backend/app/services/auth_service.py`. This page records callable signa
 
 **Explicit HTTP errors:** "Password and confirm password must match"; "User not found"; "Password reset code has expired"; "Too many invalid reset attempts. Request a new code."; "Invalid password reset code".
 
+## `AuthService.get_invitation_details`
+
+**Source:** `backend/app/services/auth_service.py`
+
+**Signature:** `get_invitation_details(self, token: str) -> InvitationDetailsResponse`
+
+**Key calls:** `self.get_invited_user`, `InvitationDetailsResponse`.
+
