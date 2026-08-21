@@ -10,3 +10,13 @@ Source: `backend/app/services/llm_integration_service.py`. This page records cal
 
 **Key calls:** `datetime.now`.
 
+## `LLMIntegrationService.ensure_manager`
+
+**Source:** `backend/app/services/llm_integration_service.py`
+
+**Signature:** `ensure_manager(current_user: User) -> None`
+
+**Key calls:** `current_user.role.strip().lower`, `current_user.role.strip`.
+
+**Explicit HTTP errors:** "Only managers can manage organization integrations".
+
