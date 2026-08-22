@@ -20,3 +20,13 @@ Source: `backend/app/services/llm_integration_service.py`. This page records cal
 
 **Explicit HTTP errors:** "Only managers can manage organization integrations".
 
+## `LLMIntegrationService.normalize_provider`
+
+**Source:** `backend/app/services/llm_integration_service.py`
+
+**Signature:** `normalize_provider(provider: str) -> str`
+
+**Key calls:** `provider.strip().lower`, `provider.strip`.
+
+**Explicit HTTP errors:** "Select a supported provider".
+
