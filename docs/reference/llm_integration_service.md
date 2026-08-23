@@ -30,3 +30,13 @@ Source: `backend/app/services/llm_integration_service.py`. This page records cal
 
 **Explicit HTTP errors:** "Select a supported provider".
 
+## `LLMIntegrationService.normalize_account_name`
+
+**Source:** `backend/app/services/llm_integration_service.py`
+
+**Signature:** `normalize_account_name(account_name: str) -> str`
+
+**Key calls:** `' '.join`, `account_name.strip().split`, `account_name.strip`.
+
+**Explicit HTTP errors:** "Account name is required".
+
