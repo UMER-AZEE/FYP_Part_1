@@ -40,3 +40,13 @@ Source: `backend/app/services/llm_integration_service.py`. This page records cal
 
 **Explicit HTTP errors:** "Account name is required".
 
+## `LLMIntegrationService.normalize_policy_name`
+
+**Source:** `backend/app/services/llm_integration_service.py`
+
+**Signature:** `normalize_policy_name(policy_name: str) -> str`
+
+**Key calls:** `' '.join`, `policy_name.strip().split`, `policy_name.strip`.
+
+**Explicit HTTP errors:** "Policy is required".
+
