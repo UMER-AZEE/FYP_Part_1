@@ -50,3 +50,13 @@ Source: `backend/app/services/llm_integration_service.py`. This page records cal
 
 **Explicit HTTP errors:** "Policy is required".
 
+## `LLMIntegrationService.normalize_api_key`
+
+**Source:** `backend/app/services/llm_integration_service.py`
+
+**Signature:** `normalize_api_key(api_key: str | None, *, required: bool) -> str | None`
+
+**Key calls:** `api_key.strip`.
+
+**Explicit HTTP errors:** "API key is required".
+
