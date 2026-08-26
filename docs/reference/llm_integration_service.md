@@ -60,3 +60,11 @@ Source: `backend/app/services/llm_integration_service.py`. This page records cal
 
 **Explicit HTTP errors:** "API key is required".
 
+## `LLMIntegrationService.normalize_remote_models`
+
+**Source:** `backend/app/services/llm_integration_service.py`
+
+**Signature:** `normalize_remote_models(models: list[str]) -> list[str]`
+
+**Key calls:** `' '.join`, `deduped.setdefault`, `deduped.values`, `model.strip().split`, `normalized.lower`, `model.strip`.
+
