@@ -68,3 +68,13 @@ Source: `backend/app/services/llm_integration_service.py`. This page records cal
 
 **Key calls:** `' '.join`, `deduped.setdefault`, `deduped.values`, `model.strip().split`, `normalized.lower`, `model.strip`.
 
+## `LLMIntegrationService.normalize_models`
+
+**Source:** `backend/app/services/llm_integration_service.py`
+
+**Signature:** `normalize_models(models: list[str]) -> list[str]`
+
+**Key calls:** `' '.join`, `normalized.lower`, `seen.add`, `normalized_models.append`, `model.strip().split`, `model.strip`.
+
+**Explicit HTTP errors:** "Select at least one model".
+
