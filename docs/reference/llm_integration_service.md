@@ -78,3 +78,11 @@ Source: `backend/app/services/llm_integration_service.py`. This page records cal
 
 **Explicit HTTP errors:** "Select at least one model".
 
+## `LLMIntegrationService.mask_api_key`
+
+**Source:** `backend/app/services/llm_integration_service.py`
+
+**Signature:** `mask_api_key(api_key: str) -> str`
+
+**Returns expression:** `f"{api_key[:4]}{'*' * max(len(api_key) - 8, 4)}{api_key[-4:]}"`.
+
