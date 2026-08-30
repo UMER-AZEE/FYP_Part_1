@@ -86,3 +86,13 @@ Source: `backend/app/services/llm_integration_service.py`. This page records cal
 
 **Returns expression:** `f"{api_key[:4]}{'*' * max(len(api_key) - 8, 4)}{api_key[-4:]}"`.
 
+## `LLMIntegrationService.read_json_response`
+
+**Source:** `backend/app/services/llm_integration_service.py`
+
+**Signature:** `read_json_response(request: Request) -> dict`
+
+**Key calls:** `json.loads`, `urlopen`, `response.read().decode`, `payload.get('error', {}).get`, `payload.get`, `response.read`, `exc.read().decode`, `exc.read`.
+
+**Explicit HTTP errors:** "Provider returned an invalid response while loading models".
+
