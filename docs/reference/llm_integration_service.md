@@ -96,3 +96,11 @@ Source: `backend/app/services/llm_integration_service.py`. This page records cal
 
 **Explicit HTTP errors:** "Provider returned an invalid response while loading models".
 
+## `LLMIntegrationService.fetch_openai_compatible_models`
+
+**Source:** `backend/app/services/llm_integration_service.py`
+
+**Signature:** `fetch_openai_compatible_models(self, provider: str, api_key: str) -> list[str]`
+
+**Key calls:** `Request`, `self.read_json_response`, `self.normalize_remote_models`, `item.get('id', '').strip`, `payload.get`, `item.get`.
+
