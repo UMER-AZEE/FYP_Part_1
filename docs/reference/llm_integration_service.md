@@ -104,3 +104,11 @@ Source: `backend/app/services/llm_integration_service.py`. This page records cal
 
 **Key calls:** `Request`, `self.read_json_response`, `self.normalize_remote_models`, `item.get('id', '').strip`, `payload.get`, `item.get`.
 
+## `LLMIntegrationService.fetch_gemini_models`
+
+**Source:** `backend/app/services/llm_integration_service.py`
+
+**Signature:** `fetch_gemini_models(self, api_key: str) -> list[str]`
+
+**Key calls:** `Request`, `self.read_json_response`, `payload.get`, `self.normalize_remote_models`, `urlencode`, `item.get`, `item.get('name', '').removeprefix`, `models.append`.
+
