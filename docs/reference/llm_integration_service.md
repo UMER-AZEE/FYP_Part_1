@@ -120,3 +120,11 @@ Source: `backend/app/services/llm_integration_service.py`. This page records cal
 
 **Key calls:** `Request`, `self.read_json_response`, `self.normalize_remote_models`, `item.get('id', '').strip`, `payload.get`, `item.get`.
 
+## `LLMIntegrationService.fetch_ollama_models`
+
+**Source:** `backend/app/services/llm_integration_service.py`
+
+**Signature:** `fetch_ollama_models(self) -> list[str]`
+
+**Key calls:** `Request`, `self.read_json_response`, `self.normalize_remote_models`, `(item.get('model') or item.get('name') or '').strip`, `payload.get`, `item.get`.
+
