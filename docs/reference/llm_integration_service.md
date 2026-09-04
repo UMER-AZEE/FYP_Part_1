@@ -136,3 +136,13 @@ Source: `backend/app/services/llm_integration_service.py`. This page records cal
 
 **Key calls:** `LLMIntegrationRead`, `self.mask_api_key`.
 
+## `LLMIntegrationService.ensure_unique_account_name`
+
+**Source:** `backend/app/services/llm_integration_service.py`
+
+**Signature:** `ensure_unique_account_name(self, current_user: User, provider: str, account_name: str, *, exclude_integration_id: str | None=None) -> None`
+
+**Key calls:** `self.integration_repository.find_by_company_provider_account_name`.
+
+**Explicit HTTP errors:** "An integration with this provider and account name already exists".
+
