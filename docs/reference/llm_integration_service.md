@@ -128,3 +128,11 @@ Source: `backend/app/services/llm_integration_service.py`. This page records cal
 
 **Key calls:** `Request`, `self.read_json_response`, `self.normalize_remote_models`, `(item.get('model') or item.get('name') or '').strip`, `payload.get`, `item.get`.
 
+## `LLMIntegrationService.to_read`
+
+**Source:** `backend/app/services/llm_integration_service.py`
+
+**Signature:** `to_read(self, integration: LLMIntegration) -> LLMIntegrationRead`
+
+**Key calls:** `LLMIntegrationRead`, `self.mask_api_key`.
+
