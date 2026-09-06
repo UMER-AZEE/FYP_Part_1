@@ -146,3 +146,11 @@ Source: `backend/app/services/llm_integration_service.py`. This page records cal
 
 **Explicit HTTP errors:** "An integration with this provider and account name already exists".
 
+## `LLMIntegrationService.list_integrations`
+
+**Source:** `backend/app/services/llm_integration_service.py`
+
+**Signature:** `list_integrations(self, current_user: User) -> LLMIntegrationsResponse`
+
+**Key calls:** `self.ensure_manager`, `LLMIntegrationsResponse`, `self.to_read`, `self.integration_repository.list_by_company_id`.
+
