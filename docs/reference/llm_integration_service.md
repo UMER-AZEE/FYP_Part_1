@@ -154,3 +154,13 @@ Source: `backend/app/services/llm_integration_service.py`. This page records cal
 
 **Key calls:** `self.ensure_manager`, `LLMIntegrationsResponse`, `self.to_read`, `self.integration_repository.list_by_company_id`.
 
+## `LLMIntegrationService.fetch_available_models`
+
+**Source:** `backend/app/services/llm_integration_service.py`
+
+**Signature:** `fetch_available_models(self, current_user: User, payload: LLMAvailableModelsRequest) -> LLMAvailableModelsResponse`
+
+**Key calls:** `self.ensure_manager`, `self.normalize_provider`, `self.normalize_api_key`, `LLMAvailableModelsResponse`, `self.fetch_openai_compatible_models`, `self.fetch_gemini_models`, `self.fetch_anthropic_models`, `self.fetch_ollama_models`.
+
+**Explicit HTTP errors:** "No available models were returned for this provider"; "Provider model loading is not supported".
+
