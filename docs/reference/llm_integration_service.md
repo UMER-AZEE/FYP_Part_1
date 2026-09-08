@@ -164,3 +164,13 @@ Source: `backend/app/services/llm_integration_service.py`. This page records cal
 
 **Explicit HTTP errors:** "No available models were returned for this provider"; "Provider model loading is not supported".
 
+## `LLMIntegrationService.create_integration`
+
+**Source:** `backend/app/services/llm_integration_service.py`
+
+**Signature:** `create_integration(self, current_user: User, payload: LLMIntegrationCreateRequest) -> LLMIntegrationMutationResponse`
+
+**Key calls:** `self.ensure_manager`, `self.normalize_provider`, `self.normalize_account_name`, `self.normalize_api_key`, `self.normalize_policy_name`, `self.normalize_models`, `self.ensure_unique_account_name`, `now_utc`.
+
+**Explicit HTTP errors:** "An integration with this provider and account name already exists".
+
