@@ -174,3 +174,13 @@ Source: `backend/app/services/llm_integration_service.py`. This page records cal
 
 **Explicit HTTP errors:** "An integration with this provider and account name already exists".
 
+## `LLMIntegrationService.update_integration`
+
+**Source:** `backend/app/services/llm_integration_service.py`
+
+**Signature:** `update_integration(self, current_user: User, integration_id: str, payload: LLMIntegrationUpdateRequest) -> LLMIntegrationMutationResponse`
+
+**Key calls:** `self.ensure_manager`, `self.integration_repository.find_by_id`, `self.normalize_provider`, `self.normalize_account_name`, `self.normalize_policy_name`, `self.normalize_models`, `self.normalize_api_key`, `self.ensure_unique_account_name`.
+
+**Explicit HTTP errors:** "Integration not found"; "An integration with this provider and account name already exists".
+
