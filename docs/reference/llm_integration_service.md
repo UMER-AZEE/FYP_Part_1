@@ -184,3 +184,13 @@ Source: `backend/app/services/llm_integration_service.py`. This page records cal
 
 **Explicit HTTP errors:** "Integration not found"; "An integration with this provider and account name already exists".
 
+## `LLMIntegrationService.delete_integration`
+
+**Source:** `backend/app/services/llm_integration_service.py`
+
+**Signature:** `delete_integration(self, current_user: User, integration_id: str) -> dict[str, str]`
+
+**Key calls:** `self.ensure_manager`, `self.integration_repository.find_by_id`, `self.integration_repository.delete`.
+
+**Explicit HTTP errors:** "Integration not found".
+
