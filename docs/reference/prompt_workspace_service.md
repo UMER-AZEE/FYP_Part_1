@@ -10,3 +10,11 @@ Source: `backend/app/services/prompt_workspace_service.py`. This page records ca
 
 **Key calls:** `datetime.now`.
 
+## `PromptWorkspaceService.is_manager`
+
+**Source:** `backend/app/services/prompt_workspace_service.py`
+
+**Signature:** `is_manager(user: User) -> bool`
+
+**Key calls:** `user.role.strip().lower`, `user.role.strip`.
+
