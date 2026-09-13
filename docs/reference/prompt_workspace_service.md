@@ -18,3 +18,11 @@ Source: `backend/app/services/prompt_workspace_service.py`. This page records ca
 
 **Key calls:** `user.role.strip().lower`, `user.role.strip`.
 
+## `PromptWorkspaceService.normalize_text`
+
+**Source:** `backend/app/services/prompt_workspace_service.py`
+
+**Signature:** `normalize_text(value: str, *, field_name: str) -> str`
+
+**Key calls:** `value.strip`.
+
