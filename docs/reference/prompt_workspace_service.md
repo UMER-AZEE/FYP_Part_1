@@ -26,3 +26,11 @@ Source: `backend/app/services/prompt_workspace_service.py`. This page records ca
 
 **Key calls:** `value.strip`.
 
+## `PromptWorkspaceService.normalize_optional_text`
+
+**Source:** `backend/app/services/prompt_workspace_service.py`
+
+**Signature:** `normalize_optional_text(value: str | None) -> str`
+
+**Key calls:** `' '.join`, `(value or '').strip().split`, `(value or '').strip`.
+
