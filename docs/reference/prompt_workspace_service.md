@@ -34,3 +34,11 @@ Source: `backend/app/services/prompt_workspace_service.py`. This page records ca
 
 **Key calls:** `' '.join`, `(value or '').strip().split`, `(value or '').strip`.
 
+## `PromptWorkspaceService.normalize_groups`
+
+**Source:** `backend/app/services/prompt_workspace_service.py`
+
+**Signature:** `normalize_groups(groups: list[str]) -> list[str]`
+
+**Key calls:** `' '.join`, `normalized.lower`, `seen.add`, `normalized_groups.append`, `group.strip().split`, `group.strip`.
+
