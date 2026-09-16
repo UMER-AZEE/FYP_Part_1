@@ -42,3 +42,11 @@ Source: `backend/app/services/prompt_workspace_service.py`. This page records ca
 
 **Key calls:** `' '.join`, `normalized.lower`, `seen.add`, `normalized_groups.append`, `group.strip().split`, `group.strip`.
 
+## `PromptWorkspaceService.build_messages`
+
+**Source:** `backend/app/services/prompt_workspace_service.py`
+
+**Signature:** `build_messages(prompt: str, system_prompt: str) -> list[dict[str, str]]`
+
+**Key calls:** `messages.append`.
+
