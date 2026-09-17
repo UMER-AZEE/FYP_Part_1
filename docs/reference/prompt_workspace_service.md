@@ -50,3 +50,11 @@ Source: `backend/app/services/prompt_workspace_service.py`. This page records ca
 
 **Key calls:** `messages.append`.
 
+## `PromptWorkspaceService.read_json_response`
+
+**Source:** `backend/app/services/prompt_workspace_service.py`
+
+**Signature:** `read_json_response(request: Request) -> dict`
+
+**Key calls:** `json.loads`, `urlopen`, `response.read().decode`, `PromptProviderError`, `payload.get('error', {}).get`, `payload.get`, `str(detail).strip`, `response.read`.
+
