@@ -58,3 +58,11 @@ Source: `backend/app/services/prompt_workspace_service.py`. This page records ca
 
 **Key calls:** `json.loads`, `urlopen`, `response.read().decode`, `PromptProviderError`, `payload.get('error', {}).get`, `payload.get`, `str(detail).strip`, `response.read`.
 
+## `PromptWorkspaceService.extract_openai_text`
+
+**Source:** `backend/app/services/prompt_workspace_service.py`
+
+**Signature:** `extract_openai_text(payload: dict) -> str`
+
+**Key calls:** `payload.get`, `choices[0].get`, `message.get`, `content.strip`, `'\n'.join`, `item.get('text', '').strip`, `item.get`.
+
