@@ -66,3 +66,11 @@ Source: `backend/app/services/prompt_workspace_service.py`. This page records ca
 
 **Key calls:** `payload.get`, `choices[0].get`, `message.get`, `content.strip`, `'\n'.join`, `item.get('text', '').strip`, `item.get`.
 
+## `PromptWorkspaceService.extract_anthropic_text`
+
+**Source:** `backend/app/services/prompt_workspace_service.py`
+
+**Signature:** `extract_anthropic_text(payload: dict) -> str`
+
+**Key calls:** `payload.get`, `'\n'.join`, `item.get('text', '').strip`, `item.get`.
+
