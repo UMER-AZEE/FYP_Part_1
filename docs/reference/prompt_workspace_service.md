@@ -74,3 +74,11 @@ Source: `backend/app/services/prompt_workspace_service.py`. This page records ca
 
 **Key calls:** `payload.get`, `'\n'.join`, `item.get('text', '').strip`, `item.get`.
 
+## `PromptWorkspaceService.extract_gemini_text`
+
+**Source:** `backend/app/services/prompt_workspace_service.py`
+
+**Signature:** `extract_gemini_text(payload: dict) -> str`
+
+**Key calls:** `payload.get`, `candidates[0].get`, `content.get`, `'\n'.join`, `item.get('text', '').strip`, `item.get`.
+
