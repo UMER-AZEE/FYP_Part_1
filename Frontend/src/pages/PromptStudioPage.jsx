@@ -47,10 +47,35 @@ function getStatusTone(status) {
   return status === 'completed' ? 'green' : 'rose'
 }
 
-function summarizeRate(runs) {
-  if (!runs.length) return '--'
-  const completed = runs.filter((run) => run.status === 'completed').length
-  return `${Math.round((completed / runs.length) * 100)}%`
+function getRunBucket(value) {
+  const createdAt = new Date(value)
+  const today = new Date()
+  const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate())
+  const runStart = new Date(createdAt.getFullYear(), createdAt.getMonth(), createdAt.getDate())
+  const diffDays = Math.floor((todayStart - runStart) / 86400000)
+
+  if (diffDays <= 0) return 'Today'
+  if (diffDays <= 7) return 'Last 7 Days'
+  if (diffDays <= 30) return 'Last 30 Days'
+  return 'Older'
+}
+
+function groupRunsByDate(runs) {
+  const order = ['Today', 'Last 7 Days', 'Last 30 Days', 'Older']
+  const grouped = order.map((label) => ({ label, runs: [] }))
+
+  runs.forEach((run) => {
+    const bucket = getRunBucket(run.created_at)
+    const section = grouped.find((group) => group.label === bucket)
+    section.runs.push(run)
+  })
+
+  return grouped.filter((group) => group.runs.length > 0)
+}
+
+function summarizePrompt(prompt = '') {
+  const cleaned = prompt.trim().replace(/\s+/g, ' ')
+  return cleaned.length > 82 ? `${cleaned.slice(0, 82)}...` : cleaned
 }
 
 export default function PromptStudioPage({ currentUser }) {
@@ -71,7 +96,7 @@ export default function PromptStudioPage({ currentUser }) {
   const selectedModels = selectedIntegration?.models || []
   const totalRuns = runs.length
   const failedRuns = runs.filter((run) => run.status === 'failed').length
-  const assignedGroupCount = availableGroups.length
+  const groupedRuns = groupRunsByDate(runs)
 
   useEffect(() => {
     let active = true
@@ -156,6 +181,16 @@ export default function PromptStudioPage({ currentUser }) {
     }))
   }
 
+  const startNewPrompt = () => {
+    setSubmitError('')
+    setLatestRun(null)
+    setForm((current) => ({
+      ...current,
+      prompt: '',
+      system_prompt: emptyForm.system_prompt,
+    }))
+  }
+
   const handleSubmit = async (event) => {
     event.preventDefault()
     setSubmitting(true)
@@ -215,280 +250,136 @@ export default function PromptStudioPage({ currentUser }) {
   }
 
   return (
-    <>
-      <div className="prompt-studio-hero">
-        <div>
-          <div className="prompt-hero-badge">Live Prompt Workspace</div>
-          <h2>Prompt Studio</h2>
-          <p>
-            Run prompts through approved provider accounts, attach inventory groups, and inspect every response with policy context and trace metadata.
-          </p>
+    <div className="prompt-chat-shell">
+      <aside className="prompt-history-panel">
+        <div className="prompt-history-head">
+          <div>
+            <div className="prompt-history-title">History <span aria-hidden="true">?</span></div>
+            <div className="prompt-history-count">{totalRuns} runs, {failedRuns} failed</div>
+          </div>
+          <button type="button" className="prompt-history-new" onClick={startNewPrompt} aria-label="Start a new prompt">
+            +
+          </button>
         </div>
-        <div className="prompt-hero-stats">
-          <div className="prompt-hero-stat">
-            <span className="prompt-meta-label">Integrations</span>
-            <strong>{integrations.length}</strong>
-            <div className="state-copy">Active provider routes</div>
-          </div>
-          <div className="prompt-hero-stat">
-            <span className="prompt-meta-label">Success rate</span>
-            <strong>{summarizeRate(runs)}</strong>
-            <div className="state-copy">Across recent runs</div>
-          </div>
-          <div className="prompt-hero-stat">
-            <span className="prompt-meta-label">Tagged groups</span>
-            <strong>{assignedGroupCount}</strong>
-            <div className="state-copy">Available for prompt scope</div>
-          </div>
-        </div>
-      </div>
 
-      <div className="prompt-studio-grid">
-        <div className="card prompt-composer-card">
-          <div className="card-head">
-            <h3>Compose</h3>
-            <span className="hint">Choose a provider route, set the model, then run the prompt through your approved workspace path.</span>
-          </div>
-          <form className="card-body prompt-layout" onSubmit={handleSubmit}>
-            <div className="prompt-composer">
-              <div className="prompt-form-grid">
-                <label className="field">
-                  <span>Integration</span>
-                  <select name="integration_id" value={form.integration_id} onChange={updateField} required>
-                    {integrations.map((integration) => (
-                      <option key={integration.id} value={integration.id}>
-                        {formatProviderName(integration.provider)} · {integration.account_name}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-
-                <label className="field">
-                  <span>Model</span>
-                  <select name="model" value={form.model} onChange={updateField} required>
-                    {selectedModels.map((model) => (
-                      <option key={model} value={model}>{model}</option>
-                    ))}
-                  </select>
-                </label>
-
-              </div>
-
-              <div className="prompt-policy-row">
-                <div className="prompt-policy-card accent">
-                  <span className="prompt-meta-label">Applied policy</span>
-                  <strong>{selectedIntegration?.policy_name || 'None'}</strong>
-                  <div className="state-copy">Inherited from the integration record used for execution.</div>
-                </div>
-                <div className="prompt-policy-card dark">
-                  <span className="prompt-meta-label">Execution route</span>
-                  <strong>{formatProviderName(selectedIntegration?.provider || '')}</strong>
-                  <div className="state-copy">{selectedIntegration?.account_name || 'No account selected'}</div>
-                </div>
-              </div>
-
-              <label className="field">
-                <span>System prompt</span>
-                <textarea
-                  name="system_prompt"
-                  rows="4"
-                  value={form.system_prompt}
-                  onChange={updateField}
-                  placeholder="Add system instructions for the selected model."
-                />
-              </label>
-
-              <label className="field">
-                <span>User prompt</span>
-                <textarea
-                  className="prompt-editor"
-                  name="prompt"
-                  rows="10"
-                  value={form.prompt}
-                  onChange={updateField}
-                  placeholder="Write the prompt you want the selected AI model to answer."
-                  required
-                />
-              </label>
-
-              <div className="field">
-                <span>Groups</span>
-                {availableGroups.length > 0 ? (
-                  <div className="prompt-group-picker">
-                    {availableGroups.map((group) => {
-                      const checked = form.selected_groups.includes(group)
-                      return (
-                        <label className={`prompt-group-option${checked ? ' selected' : ''}`} key={group}>
-                          <input type="checkbox" checked={checked} onChange={() => toggleGroup(group)} />
-                          <span>{group}</span>
-                        </label>
-                      )
-                    })}
-                  </div>
-                ) : (
-                  <div className="state-copy">No inventory groups are defined yet. Prompts can still run without group tags.</div>
-                )}
-              </div>
-
-              {submitError ? <div className="auth-error">{submitError}</div> : null}
-
-              <div className="prompt-actions">
-                <button type="button" className="btn" onClick={() => setForm({ ...emptyForm, integration_id: form.integration_id, model: form.model, selected_groups: form.selected_groups })} disabled={submitting}>
-                  Reset text
+        <div className="prompt-history-scroll">
+          {groupedRuns.length > 0 ? groupedRuns.map((section) => (
+            <section className="prompt-history-section" key={section.label}>
+              <h4>{section.label}</h4>
+              {section.runs.map((run) => (
+                <button
+                  type="button"
+                  className={`prompt-history-item${latestRun?.id === run.id ? ' active' : ''}`}
+                  key={run.id}
+                  onClick={() => setLatestRun(run)}
+                >
+                  <span>{summarizePrompt(run.prompt)}</span>
+                  <small>{formatProviderName(run.provider)} | {run.model}</small>
+                  {run.status === 'failed' ? <em>Violations: 1</em> : null}
                 </button>
-                <button type="submit" className="btn primary prompt-run-button" disabled={submitting}>
-                  {submitting ? 'Running prompt…' : 'Run prompt'}
-                </button>
+              ))}
+            </section>
+          )) : (
+            <div className="prompt-history-empty">
+              <strong>No prompt history yet</strong>
+              <span>Runs will appear here after your first prompt.</span>
+            </div>
+          )}
+        </div>
+      </aside>
+
+      <section className="prompt-chat-main">
+        <div className="prompt-transcript-card">
+          {latestRun ? (
+            <div className="prompt-answer">
+              <div className="prompt-answer-meta">
+                <span className={`pill ${getStatusTone(latestRun.status)}`}>{latestRun.status}</span>
+                <span>{formatProviderName(latestRun.provider)}</span>
+                <span>{latestRun.model}</span>
+                <span>{formatDateTime(latestRun.created_at)}</span>
+              </div>
+
+              {latestRun.status === 'failed' ? (
+                <div className="prompt-failure-banner compact">
+                  <strong>Your request failed before a normal answer was returned.</strong>
+                  <span>{latestRun.error_message || 'The provider did not accept the request.'}</span>
+                </div>
+              ) : null}
+
+              <pre className="prompt-answer-text">
+                {latestRun.response_text || latestRun.error_message || 'No output returned.'}
+              </pre>
+
+              <div className="prompt-answer-footer">
+                <span>Policy: {latestRun.policy_name || '--'}</span>
+                <span>Groups: {latestRun.selected_groups.length ? latestRun.selected_groups.join(', ') : 'none'}</span>
+                <span>Tokens: {latestRun.total_tokens ?? '--'}</span>
+                <span>Latency: {latestRun.latency_ms ?? '--'} ms</span>
               </div>
             </div>
-
-            <div className="prompt-response-column">
-              <div className="prompt-response-card">
-                <div className="card-head">
-                  <h3>{latestRun ? 'Selected run' : 'Latest response'}</h3>
-                  <span className="hint">Output, failure detail, usage, and route metadata stay visible here while you iterate.</span>
-                </div>
-                <div className="card-body">
-                  {latestRun ? (
-                    <>
-                      <div className="prompt-response-meta">
-                        <div>
-                          <span className="prompt-meta-label">Status</span>
-                          <div><span className={`pill ${getStatusTone(latestRun.status)}`}>{latestRun.status}</span></div>
-                        </div>
-                        <div>
-                          <span className="prompt-meta-label">Latency</span>
-                          <div className="mono">{latestRun.latency_ms ? `${latestRun.latency_ms} ms` : '--'}</div>
-                        </div>
-                        <div>
-                          <span className="prompt-meta-label">Tokens</span>
-                          <div className="mono">{latestRun.total_tokens ?? '--'}</div>
-                        </div>
-                      </div>
-
-                      {latestRun.status === 'failed' ? (
-                        <div className="prompt-failure-banner">
-                          <div className="prompt-response-heading">Execution failed</div>
-                          <div>{latestRun.error_message || 'The provider did not accept the request.'}</div>
-                          <div className="state-copy">
-                            If this is a `403`, the provider account usually rejected the API key, workspace access, or model permissions for this integration.
-                          </div>
-                        </div>
-                      ) : null}
-
-                      <div className="prompt-response-block">
-                        <div className="prompt-response-heading">Model output</div>
-                        <pre className="prompt-response-text">
-                          {latestRun.response_text || latestRun.error_message || 'No output returned.'}
-                        </pre>
-                      </div>
-
-                      <div className="prompt-response-block">
-                        <div className="prompt-response-heading">Run metadata</div>
-                        <div className="prompt-metadata-grid">
-                          <div>
-                            <span className="prompt-meta-label">Provider</span>
-                            <strong>{formatProviderName(latestRun.provider)}</strong>
-                          </div>
-                          <div>
-                            <span className="prompt-meta-label">Model</span>
-                            <strong>{latestRun.model}</strong>
-                          </div>
-                          <div>
-                            <span className="prompt-meta-label">Policy</span>
-                            <strong>{latestRun.policy_name || '--'}</strong>
-                          </div>
-                          <div>
-                            <span className="prompt-meta-label">Groups</span>
-                            <strong>{latestRun.selected_groups.length ? latestRun.selected_groups.join(', ') : 'None'}</strong>
-                          </div>
-                          <div>
-                            <span className="prompt-meta-label">Executed by</span>
-                            <strong>{latestRun.user_name || latestRun.user_email}</strong>
-                          </div>
-                          <div>
-                            <span className="prompt-meta-label">Run time</span>
-                            <strong>{formatDateTime(latestRun.created_at)}</strong>
-                          </div>
-                        </div>
-                      </div>
-                    </>
-                  ) : (
-                    <div className="state-block">
-                      <div className="state-title">No prompt executed yet</div>
-                      <div className="state-copy">Submit the first prompt to see output, latency, and usage metadata here.</div>
-                    </div>
-                  )}
-                </div>
-              </div>
+          ) : (
+            <div className="prompt-empty-answer">
+              <strong>Start a prompt to see the answer here.</strong>
+              <span>Select the account and model below, then write your prompt.</span>
             </div>
-          </form>
+          )}
         </div>
 
-        <div className="card prompt-history-card">
-          <div className="card-head">
-            <h3>Recent runs</h3>
-            <span className="hint">
-              {currentUser?.role?.trim().toLowerCase() === 'manager'
-                ? 'Managers can review company-wide prompt history.'
-                : 'Your most recent prompt executions.'}
-            </span>
-          </div>
-          <div className="card-body prompt-run-list">
-            <div className="prompt-history-summary">
-              <div className="prompt-history-stat">
-                <span className="prompt-meta-label">Recent runs</span>
-                <strong>{totalRuns}</strong>
-              </div>
-              <div className="prompt-history-stat">
-                <span className="prompt-meta-label">Failures</span>
-                <strong>{failedRuns}</strong>
-              </div>
-              <div className="prompt-history-stat">
-                <span className="prompt-meta-label">Current model</span>
-                <strong>{form.model || '--'}</strong>
-              </div>
-            </div>
+        <form className="prompt-input-card" onSubmit={handleSubmit}>
+          <label className="prompt-input-label" htmlFor="prompt-workspace-input">
+            Where should I begin? <span>*</span>
+          </label>
+          <textarea
+            id="prompt-workspace-input"
+            className="prompt-chat-input"
+            name="prompt"
+            rows="5"
+            value={form.prompt}
+            onChange={updateField}
+            placeholder="Ask anything..."
+            required
+          />
 
-            {runs.length > 0 ? runs.map((run) => (
-              <button
-                type="button"
-                className={`prompt-run-item${latestRun?.id === run.id ? ' active' : ''}`}
-                key={run.id}
-                onClick={() => setLatestRun(run)}
-              >
-                <div className="prompt-run-item-head">
-                  <div>
-                    <div className="font-medium">{run.user_name || run.user_email}</div>
-                    <div className="prompt-run-subtitle">
-                      {formatProviderName(run.provider)} · {run.model} · {run.integration_account_name}
-                    </div>
-                  </div>
-                  <div className="prompt-run-status">
-                    <span className={`pill ${getStatusTone(run.status)}`}>{run.status}</span>
-                    <span className="mono">{formatDateTime(run.created_at)}</span>
-                  </div>
-                </div>
-                <div className="prompt-run-prompt">{run.prompt}</div>
-                {run.status === 'failed' && run.error_message ? (
-                  <div className="prompt-run-error">{run.error_message}</div>
-                ) : null}
-                <div className="prompt-run-footer">
-                  <span className="mono">latency {run.latency_ms ?? '--'} ms</span>
-                  <span className="mono">tokens {run.total_tokens ?? '--'}</span>
-                  <span>policy {run.policy_name || '--'}</span>
-                  <span>groups {run.selected_groups.length ? run.selected_groups.join(', ') : 'none'}</span>
-                </div>
+          {availableGroups.length > 0 ? (
+            <div className="prompt-group-strip" aria-label="Prompt groups">
+              {availableGroups.map((group) => {
+                const checked = form.selected_groups.includes(group)
+                return (
+                  <label className={`prompt-group-pill${checked ? ' selected' : ''}`} key={group}>
+                    <input type="checkbox" checked={checked} onChange={() => toggleGroup(group)} />
+                    <span>{group}</span>
+                  </label>
+                )
+              })}
+            </div>
+          ) : null}
+
+          {submitError ? <div className="auth-error">{submitError}</div> : null}
+
+          <div className="prompt-input-footer">
+            <div className="prompt-route-note">
+              <span>Policy: {selectedIntegration?.policy_name || 'None'}</span>
+            </div>
+            <div className="prompt-route-controls">
+              <select name="integration_id" value={form.integration_id} onChange={updateField} required aria-label="Integration">
+                {integrations.map((integration) => (
+                  <option key={integration.id} value={integration.id}>
+                    {formatProviderName(integration.provider)} | {integration.account_name}
+                  </option>
+                ))}
+              </select>
+              <select name="model" value={form.model} onChange={updateField} required aria-label="Model">
+                {selectedModels.map((model) => (
+                  <option key={model} value={model}>{model}</option>
+                ))}
+              </select>
+              <button type="submit" className="prompt-send-button" disabled={submitting} aria-label="Run prompt">
+                {submitting ? '■' : '>'}
               </button>
-            )) : (
-              <div className="state-block">
-                <div className="state-title">No prompt history yet</div>
-                <div className="state-copy">Runs will appear here as soon as prompts are executed.</div>
-              </div>
-            )}
+            </div>
           </div>
-        </div>
-      </div>
-    </>
+        </form>
+      </section>
+    </div>
   )
 }
