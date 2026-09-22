@@ -82,3 +82,11 @@ Source: `backend/app/services/prompt_workspace_service.py`. This page records ca
 
 **Key calls:** `payload.get`, `candidates[0].get`, `content.get`, `'\n'.join`, `item.get('text', '').strip`, `item.get`.
 
+## `PromptWorkspaceService.to_context_integration`
+
+**Source:** `backend/app/services/prompt_workspace_service.py`
+
+**Signature:** `to_context_integration(self, integration) -> PromptWorkspaceIntegrationRead`
+
+**Key calls:** `PromptWorkspaceIntegrationRead`.
+
