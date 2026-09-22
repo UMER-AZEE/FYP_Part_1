@@ -90,3 +90,11 @@ Source: `backend/app/services/prompt_workspace_service.py`. This page records ca
 
 **Key calls:** `PromptWorkspaceIntegrationRead`.
 
+## `PromptWorkspaceService.to_run_read`
+
+**Source:** `backend/app/services/prompt_workspace_service.py`
+
+**Signature:** `to_run_read(run: PromptRun) -> PromptRunRead`
+
+**Key calls:** `PromptRunRead`.
+
