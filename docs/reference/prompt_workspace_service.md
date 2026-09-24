@@ -106,3 +106,11 @@ Source: `backend/app/services/prompt_workspace_service.py`. This page records ca
 
 **Key calls:** `self.integration_repository.list_by_company_id`, `PromptWorkspaceContextResponse`, `self.to_context_integration`.
 
+## `PromptWorkspaceService.list_runs`
+
+**Source:** `backend/app/services/prompt_workspace_service.py`
+
+**Signature:** `list_runs(self, current_user: User, limit: int=20) -> PromptRunsResponse`
+
+**Key calls:** `self.is_manager`, `PromptRunsResponse`, `self.prompt_run_repository.list_by_company_id`, `self.prompt_run_repository.list_by_user_id`, `self.to_run_read`.
+
