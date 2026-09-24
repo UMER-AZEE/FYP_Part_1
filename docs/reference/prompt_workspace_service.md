@@ -98,3 +98,11 @@ Source: `backend/app/services/prompt_workspace_service.py`. This page records ca
 
 **Key calls:** `PromptRunRead`.
 
+## `PromptWorkspaceService.get_context`
+
+**Source:** `backend/app/services/prompt_workspace_service.py`
+
+**Signature:** `get_context(self, current_user: User) -> PromptWorkspaceContextResponse`
+
+**Key calls:** `self.integration_repository.list_by_company_id`, `PromptWorkspaceContextResponse`, `self.to_context_integration`.
+
