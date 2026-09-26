@@ -1,4 +1,6 @@
 export function linePath(points, width, height, pad = 2) {
+  if (!points.length) return ''
+
   const max = Math.max(...points)
   const min = Math.min(...points)
   const range = max - min || 1
