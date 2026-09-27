@@ -114,3 +114,13 @@ Source: `backend/app/services/prompt_workspace_service.py`. This page records ca
 
 **Key calls:** `self.is_manager`, `PromptRunsResponse`, `self.prompt_run_repository.list_by_company_id`, `self.prompt_run_repository.list_by_user_id`, `self.to_run_read`.
 
+## `PromptWorkspaceService.resolve_integration`
+
+**Source:** `backend/app/services/prompt_workspace_service.py`
+
+**Signature:** `resolve_integration(self, current_user: User, integration_id: str)`
+
+**Key calls:** `self.integration_repository.find_by_id`.
+
+**Explicit HTTP errors:** "Integration not found".
+
