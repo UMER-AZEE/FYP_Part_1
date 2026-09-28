@@ -124,3 +124,13 @@ Source: `backend/app/services/prompt_workspace_service.py`. This page records ca
 
 **Explicit HTTP errors:** "Integration not found".
 
+## `PromptWorkspaceService.resolve_model`
+
+**Source:** `backend/app/services/prompt_workspace_service.py`
+
+**Signature:** `resolve_model(integration, model: str) -> str`
+
+**Key calls:** `' '.join`, `available_models.get`, `model.strip().split`, `item.lower`, `normalized_model.lower`, `model.strip`.
+
+**Explicit HTTP errors:** "Model is required"; "Selected model is not enabled for this integration".
+
