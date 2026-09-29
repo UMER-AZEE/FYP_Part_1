@@ -134,3 +134,11 @@ Source: `backend/app/services/prompt_workspace_service.py`. This page records ca
 
 **Explicit HTTP errors:** "Model is required"; "Selected model is not enabled for this integration".
 
+## `PromptWorkspaceService.execute_openai_compatible`
+
+**Source:** `backend/app/services/prompt_workspace_service.py`
+
+**Signature:** `execute_openai_compatible(self, provider: str, integration, payload: PromptRunExecuteRequest) -> PromptProviderResult`
+
+**Key calls:** `Request`, `self.read_json_response`, `response_payload.get`, `PromptProviderResult`, `self.build_messages`, `json.dumps(request_body).encode`, `self.extract_openai_text`, `usage.get`.
+
