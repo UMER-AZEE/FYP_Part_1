@@ -142,3 +142,11 @@ Source: `backend/app/services/prompt_workspace_service.py`. This page records ca
 
 **Key calls:** `Request`, `self.read_json_response`, `response_payload.get`, `PromptProviderResult`, `self.build_messages`, `json.dumps(request_body).encode`, `self.extract_openai_text`, `usage.get`.
 
+## `PromptWorkspaceService.execute_anthropic`
+
+**Source:** `backend/app/services/prompt_workspace_service.py`
+
+**Signature:** `execute_anthropic(self, integration, payload: PromptRunExecuteRequest) -> PromptProviderResult`
+
+**Key calls:** `Request`, `self.read_json_response`, `response_payload.get`, `usage.get`, `PromptProviderResult`, `json.dumps(request_body).encode`, `self.extract_anthropic_text`, `json.dumps`.
+
