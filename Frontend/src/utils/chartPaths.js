@@ -4,7 +4,7 @@ export function linePath(points, width, height, pad = 2) {
   const max = Math.max(...points)
   const min = Math.min(...points)
   const range = max - min || 1
-  const step = (width - pad * 2) / (points.length - 1)
+  const step = points.length > 1 ? (width - pad * 2) / (points.length - 1) : 0
 
   return points
     .map((point, index) => {
