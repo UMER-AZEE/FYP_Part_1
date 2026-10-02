@@ -150,3 +150,11 @@ Source: `backend/app/services/prompt_workspace_service.py`. This page records ca
 
 **Key calls:** `Request`, `self.read_json_response`, `response_payload.get`, `usage.get`, `PromptProviderResult`, `json.dumps(request_body).encode`, `self.extract_anthropic_text`, `json.dumps`.
 
+## `PromptWorkspaceService.execute_gemini`
+
+**Source:** `backend/app/services/prompt_workspace_service.py`
+
+**Signature:** `execute_gemini(self, integration, payload: PromptRunExecuteRequest) -> PromptProviderResult`
+
+**Key calls:** `Request`, `self.read_json_response`, `response_payload.get`, `PromptProviderResult`, `urlencode`, `json.dumps(request_body).encode`, `self.extract_gemini_text`, `usage.get`.
+
