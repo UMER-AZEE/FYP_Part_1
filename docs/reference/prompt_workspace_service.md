@@ -158,3 +158,11 @@ Source: `backend/app/services/prompt_workspace_service.py`. This page records ca
 
 **Key calls:** `Request`, `self.read_json_response`, `response_payload.get`, `PromptProviderResult`, `urlencode`, `json.dumps(request_body).encode`, `self.extract_gemini_text`, `usage.get`.
 
+## `PromptWorkspaceService.execute_ollama`
+
+**Source:** `backend/app/services/prompt_workspace_service.py`
+
+**Signature:** `execute_ollama(self, payload: PromptRunExecuteRequest) -> PromptProviderResult`
+
+**Key calls:** `Request`, `self.read_json_response`, `response_payload.get`, `message.get`, `PromptProviderResult`, `self.build_messages`, `json.dumps(request_body).encode`, `content.strip`.
+
