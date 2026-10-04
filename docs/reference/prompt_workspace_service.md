@@ -166,3 +166,11 @@ Source: `backend/app/services/prompt_workspace_service.py`. This page records ca
 
 **Key calls:** `Request`, `self.read_json_response`, `response_payload.get`, `message.get`, `PromptProviderResult`, `self.build_messages`, `json.dumps(request_body).encode`, `content.strip`.
 
+## `PromptWorkspaceService.run_provider_prompt`
+
+**Source:** `backend/app/services/prompt_workspace_service.py`
+
+**Signature:** `run_provider_prompt(self, integration, payload: PromptRunExecuteRequest) -> PromptProviderResult`
+
+**Key calls:** `PromptProviderError`, `self.execute_openai_compatible`, `self.execute_anthropic`, `self.execute_gemini`, `self.execute_ollama`.
+
