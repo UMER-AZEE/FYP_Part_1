@@ -174,3 +174,11 @@ Source: `backend/app/services/prompt_workspace_service.py`. This page records ca
 
 **Key calls:** `PromptProviderError`, `self.execute_openai_compatible`, `self.execute_anthropic`, `self.execute_gemini`, `self.execute_ollama`.
 
+## `PromptWorkspaceService.build_prompt_run`
+
+**Source:** `backend/app/services/prompt_workspace_service.py`
+
+**Signature:** `build_prompt_run(self, *, current_user: User, integration, payload: PromptRunExecuteRequest, model: str, response_text: str, status_value: str, error_message: str | None, latency_ms: int | None, prompt_tokens: int | None, completion_tokens: int | None, total_tokens: int | None, selected_groups: list[str]) -> PromptRun`
+
+**Key calls:** `PromptRun`, `' '.join((part for part in [current_user.first_name, current_user.last_name] if part)).strip`, `now_utc`, `' '.join`.
+
