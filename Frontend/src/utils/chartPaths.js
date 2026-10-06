@@ -16,6 +16,8 @@ export function linePath(points, width, height, pad = 2) {
 }
 
 export function areaPath(points, width, height, pad = 2) {
+  if (!points.length) return ''
+
   return `${linePath(points, width, height, pad)} L ${width - pad} ${height} L ${pad} ${height} Z`
 }
 
