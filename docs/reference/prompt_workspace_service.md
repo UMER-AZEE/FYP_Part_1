@@ -182,3 +182,11 @@ Source: `backend/app/services/prompt_workspace_service.py`. This page records ca
 
 **Key calls:** `PromptRun`, `' '.join((part for part in [current_user.first_name, current_user.last_name] if part)).strip`, `now_utc`, `' '.join`.
 
+## `PromptWorkspaceService.run_prompt`
+
+**Source:** `backend/app/services/prompt_workspace_service.py`
+
+**Signature:** `run_prompt(self, current_user: User, payload: PromptRunExecuteRequest) -> PromptRunExecutionResponse`
+
+**Key calls:** `self.resolve_integration`, `self.resolve_model`, `self.normalize_text`, `self.normalize_optional_text`, `self.normalize_groups`, `PromptRunExecuteRequest`, `perf_counter`, `self.prompt_run_repository.create`.
+
