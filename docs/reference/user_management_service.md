@@ -10,3 +10,11 @@ Source: `backend/app/services/user_management_service.py`. This page records cal
 
 **Key calls:** `ManagedUserRead`.
 
+## `UserManagementService.normalize_groups`
+
+**Source:** `backend/app/services/user_management_service.py`
+
+**Signature:** `normalize_groups(groups: list[str]) -> list[str]`
+
+**Key calls:** `' '.join`, `normalized.lower`, `seen.add`, `normalized_groups.append`, `group.strip().split`, `group.strip`.
+
