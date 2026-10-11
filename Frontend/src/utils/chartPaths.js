@@ -22,7 +22,8 @@ export function areaPath(points, width, height, pad = 2) {
 }
 
 export function providerGradient(provider) {
-  if (provider === 'Gemini') return 'linear-gradient(135deg, oklch(0.6 0.14 265), oklch(0.55 0.14 275))'
+  provider = String(provider || '').trim().toLowerCase()
+  if (provider === 'gemini') return 'linear-gradient(135deg, oklch(0.6 0.14 265), oklch(0.55 0.14 275))'
   if (provider === 'Groq') return 'linear-gradient(135deg, oklch(0.6 0.14 300), oklch(0.55 0.14 310))'
   if (provider === 'OpenAI') return 'linear-gradient(135deg, oklch(0.6 0.12 155), oklch(0.55 0.12 165))'
   return 'linear-gradient(135deg, oklch(0.6 0.14 45), oklch(0.55 0.14 55))'
