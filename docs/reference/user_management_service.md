@@ -28,3 +28,11 @@ Source: `backend/app/services/user_management_service.py`. This page records cal
 
 **Explicit HTTP errors:** "First name is required"; "Last name is required"; "Department is required"; "Role is required".
 
+## `UserManagementService.prepare_invitation`
+
+**Source:** `backend/app/services/user_management_service.py`
+
+**Signature:** `prepare_invitation(user: User) -> str`
+
+**Key calls:** `generate_invitation_token`, `now_utc`, `hash_invitation_token`, `timedelta`.
+
