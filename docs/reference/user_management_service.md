@@ -36,3 +36,11 @@ Source: `backend/app/services/user_management_service.py`. This page records cal
 
 **Key calls:** `generate_invitation_token`, `now_utc`, `hash_invitation_token`, `timedelta`.
 
+## `UserManagementService.invitation_message`
+
+**Source:** `backend/app/services/user_management_service.py`
+
+**Signature:** `invitation_message(delivery_result: EmailDeliveryResult) -> str`
+
+**Returns expression:** `'User created. Email delivery is unavailable, so the invitation link was logged to the backend console.'`.
+
