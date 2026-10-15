@@ -44,3 +44,13 @@ Source: `backend/app/services/user_management_service.py`. This page records cal
 
 **Returns expression:** `'User created. Email delivery is unavailable, so the invitation link was logged to the backend console.'`.
 
+## `UserManagementService.ensure_manager`
+
+**Source:** `backend/app/services/user_management_service.py`
+
+**Signature:** `ensure_manager(current_user: User) -> None`
+
+**Key calls:** `current_user.role.strip().lower`, `current_user.role.strip`.
+
+**Explicit HTTP errors:** "Only managers can manage company users".
+
