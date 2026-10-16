@@ -54,3 +54,11 @@ Source: `backend/app/services/user_management_service.py`. This page records cal
 
 **Explicit HTTP errors:** "Only managers can manage company users".
 
+## `UserManagementService.list_company_users`
+
+**Source:** `backend/app/services/user_management_service.py`
+
+**Signature:** `list_company_users(self, current_user: User) -> ManagedUsersResponse`
+
+**Key calls:** `self.ensure_manager`, `ManagedUsersResponse`, `self.to_managed_user`, `self.user_repository.list_by_company_id`.
+
