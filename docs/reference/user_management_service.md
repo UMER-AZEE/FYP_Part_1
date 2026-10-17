@@ -62,3 +62,13 @@ Source: `backend/app/services/user_management_service.py`. This page records cal
 
 **Key calls:** `self.ensure_manager`, `ManagedUsersResponse`, `self.to_managed_user`, `self.user_repository.list_by_company_id`.
 
+## `UserManagementService.create_user`
+
+**Source:** `backend/app/services/user_management_service.py`
+
+**Signature:** `create_user(self, current_user: User, payload: ManagedUserCreateRequest) -> ManagedUserMutationResponse`
+
+**Key calls:** `self.ensure_manager`, `User`, `self.apply_user_fields`, `self.prepare_invitation`, `send_invitation_email`, `ManagedUserMutationResponse`, `self.user_repository.find_by_email`, `self.user_repository.create`.
+
+**Explicit HTTP errors:** "Email is already registered".
+
