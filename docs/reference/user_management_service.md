@@ -72,3 +72,13 @@ Source: `backend/app/services/user_management_service.py`. This page records cal
 
 **Explicit HTTP errors:** "Email is already registered".
 
+## `UserManagementService.update_user`
+
+**Source:** `backend/app/services/user_management_service.py`
+
+**Signature:** `update_user(self, current_user: User, user_id: str, payload: ManagedUserUpdateRequest) -> ManagedUserMutationResponse`
+
+**Key calls:** `self.ensure_manager`, `self.user_repository.find_by_id`, `self.apply_user_fields`, `ManagedUserMutationResponse`, `self.prepare_invitation`, `send_invitation_email`, `self.user_repository.save`, `self.invitation_message`.
+
+**Explicit HTTP errors:** "You cannot edit your own account here"; "User not found"; "Email is already registered".
+
