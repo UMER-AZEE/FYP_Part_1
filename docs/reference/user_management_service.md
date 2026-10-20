@@ -82,3 +82,13 @@ Source: `backend/app/services/user_management_service.py`. This page records cal
 
 **Explicit HTTP errors:** "You cannot edit your own account here"; "User not found"; "Email is already registered".
 
+## `UserManagementService.delete_user`
+
+**Source:** `backend/app/services/user_management_service.py`
+
+**Signature:** `delete_user(self, current_user: User, user_id: str) -> dict[str, str]`
+
+**Key calls:** `self.ensure_manager`, `self.user_repository.find_by_id`, `self.user_repository.delete`.
+
+**Explicit HTTP errors:** "You cannot delete your own account"; "User not found".
+
