@@ -33,7 +33,7 @@ export const guardrailsPolicyOptions = [
 function safeParse(rawValue) {
   try {
     const parsed = JSON.parse(rawValue)
-    return Array.isArray(parsed) ? parsed : []
+    return Array.isArray(parsed) ? parsed.filter((group) => group && typeof group === 'object' && !Array.isArray(group) && typeof group.id === 'string') : []
   } catch {
     return []
   }
