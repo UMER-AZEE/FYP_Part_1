@@ -10,3 +10,11 @@ Source: `backend/app/repositories/company_repository.py`. This page records call
 
 **Key calls:** `self._to_model`, `self.collection.find_one`, `ObjectId`.
 
+## `CompanyRepository.find_by_slug`
+
+**Source:** `backend/app/repositories/company_repository.py`
+
+**Signature:** `find_by_slug(self, slug: str) -> Company | None`
+
+**Key calls:** `self._to_model`, `self.collection.find_one`.
+
