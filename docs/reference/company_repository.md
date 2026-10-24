@@ -18,3 +18,11 @@ Source: `backend/app/repositories/company_repository.py`. This page records call
 
 **Key calls:** `self._to_model`, `self.collection.find_one`.
 
+## `CompanyRepository.create`
+
+**Source:** `backend/app/repositories/company_repository.py`
+
+**Signature:** `create(self, name: str, slug: str) -> Company`
+
+**Key calls:** `datetime.now`, `self.collection.insert_one`, `Company`.
+
