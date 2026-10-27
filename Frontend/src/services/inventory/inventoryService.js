@@ -75,7 +75,7 @@ export function createInventoryGroup(formData) {
 }
 
 export function updateInventoryGroup(groups, groupId, nextGroup) {
-  return groups.map((group) => (group.id === groupId ? { ...group, ...nextGroup } : group))
+  return groups.map((group) => (group.id === groupId ? { ...group, ...nextGroup, id: group.id } : group))
 }
 
 export function deleteInventoryGroup(groups, groupId) {
