@@ -18,3 +18,11 @@ Source: `backend/app/repositories/llm_integration_repository.py`. This page reco
 
 **Key calls:** `self._to_model`, `self.collection.find_one`, `self._object_id`.
 
+## `LLMIntegrationRepository.list_by_company_id`
+
+**Source:** `backend/app/repositories/llm_integration_repository.py`
+
+**Signature:** `list_by_company_id(self, company_id: str) -> list[LLMIntegration]`
+
+**Key calls:** `self.collection.find`, `self._to_model`, `self._object_id`.
+
