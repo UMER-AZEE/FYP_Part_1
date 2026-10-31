@@ -34,3 +34,11 @@ Source: `backend/app/repositories/llm_integration_repository.py`. This page reco
 
 **Key calls:** `self.collection.insert_one`, `self._to_document`.
 
+## `LLMIntegrationRepository.save`
+
+**Source:** `backend/app/repositories/llm_integration_repository.py`
+
+**Signature:** `save(self, integration: LLMIntegration) -> LLMIntegration`
+
+**Key calls:** `self.collection.update_one`, `self._object_id`, `self._to_document`.
+
