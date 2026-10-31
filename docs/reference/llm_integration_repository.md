@@ -42,3 +42,11 @@ Source: `backend/app/repositories/llm_integration_repository.py`. This page reco
 
 **Key calls:** `self.collection.update_one`, `self._object_id`, `self._to_document`.
 
+## `LLMIntegrationRepository.delete`
+
+**Source:** `backend/app/repositories/llm_integration_repository.py`
+
+**Signature:** `delete(self, integration_id: str) -> bool`
+
+**Key calls:** `self.collection.delete_one`, `self._object_id`.
+
