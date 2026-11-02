@@ -96,7 +96,11 @@ export function groupsToCsv(groups) {
   return rows
     .map((row) =>
       row
-        .map((value) => `"${String(value).replaceAll('"', '""')}"`)
+        .map((value) => {
+          const text = String(value)
+          const safeText = /^[=+\-@\t\r]/.test(text) ? `'${text}` : text
+          return `\"${safeText.replaceAll('\"', '\"\"')}\"`
+        })
         .join(','),
     )
     .join('\n')
