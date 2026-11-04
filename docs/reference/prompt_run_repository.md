@@ -10,3 +10,11 @@ Source: `backend/app/repositories/prompt_run_repository.py`. This page records c
 
 **Key calls:** `self.collection.find`, `self._sorted_runs`, `self._object_id`.
 
+## `PromptRunRepository.list_by_user_id`
+
+**Source:** `backend/app/repositories/prompt_run_repository.py`
+
+**Signature:** `list_by_user_id(self, user_id: str, limit: int=20) -> list[PromptRun]`
+
+**Key calls:** `self.collection.find`, `self._sorted_runs`, `self._object_id`.
+
