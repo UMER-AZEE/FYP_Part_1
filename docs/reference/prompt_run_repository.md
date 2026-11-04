@@ -18,3 +18,11 @@ Source: `backend/app/repositories/prompt_run_repository.py`. This page records c
 
 **Key calls:** `self.collection.find`, `self._sorted_runs`, `self._object_id`.
 
+## `PromptRunRepository.create`
+
+**Source:** `backend/app/repositories/prompt_run_repository.py`
+
+**Signature:** `create(self, run: PromptRun) -> PromptRun`
+
+**Key calls:** `self.collection.insert_one`, `self._to_document`.
+
