@@ -27,14 +27,15 @@ export function clearAuthToken() {
 }
 
 export async function apiRequest(path, options = {}) {
-  const token = options.token ?? getAuthToken()
+  const { token: tokenOption, headers: customHeaders, ...fetchOptions } = options
+  const token = tokenOption ?? getAuthToken()
   const response = await fetch(`${API_BASE_URL}${path}`, {
+    ...fetchOptions,
     headers: {
       'Content-Type': 'application/json',
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      ...(options.headers || {}),
+      ...(customHeaders || {}),
     },
-    ...options,
   })
 
   return parseResponse(response)
