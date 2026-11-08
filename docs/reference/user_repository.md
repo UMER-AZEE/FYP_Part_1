@@ -10,3 +10,11 @@ Source: `backend/app/repositories/user_repository.py`. This page records callabl
 
 **Key calls:** `self._to_model`, `self.collection.find_one`.
 
+## `UserRepository.find_by_id`
+
+**Source:** `backend/app/repositories/user_repository.py`
+
+**Signature:** `find_by_id(self, user_id: str) -> User | None`
+
+**Key calls:** `self._to_model`, `self.collection.find_one`, `self._object_id`.
+
