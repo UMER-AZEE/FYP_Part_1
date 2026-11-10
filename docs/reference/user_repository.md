@@ -26,3 +26,11 @@ Source: `backend/app/repositories/user_repository.py`. This page records callabl
 
 **Key calls:** `self._to_model`, `self.collection.find_one`.
 
+## `UserRepository.list_by_company_id`
+
+**Source:** `backend/app/repositories/user_repository.py`
+
+**Signature:** `list_by_company_id(self, company_id: str) -> list[User]`
+
+**Key calls:** `self.collection.find`, `self._to_model`, `self._object_id`.
+
