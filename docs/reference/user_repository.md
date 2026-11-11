@@ -34,3 +34,11 @@ Source: `backend/app/repositories/user_repository.py`. This page records callabl
 
 **Key calls:** `self.collection.find`, `self._to_model`, `self._object_id`.
 
+## `UserRepository.create`
+
+**Source:** `backend/app/repositories/user_repository.py`
+
+**Signature:** `create(self, user: User) -> User`
+
+**Key calls:** `self.collection.insert_one`, `self._to_document`.
+
