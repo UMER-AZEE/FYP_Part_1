@@ -2,6 +2,8 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api'
 const TOKEN_STORAGE_KEY = 'centurion.auth.token'
 
 async function parseResponse(response) {
+  if (response.status === 204 || response.status === 205) return null
+
   const contentType = response.headers.get('content-type') || ''
   const isJson = contentType.includes('application/json')
   const body = isJson ? await response.json() : await response.text()
