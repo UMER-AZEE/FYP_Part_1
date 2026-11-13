@@ -42,3 +42,11 @@ Source: `backend/app/repositories/user_repository.py`. This page records callabl
 
 **Key calls:** `self.collection.insert_one`, `self._to_document`.
 
+## `UserRepository.save`
+
+**Source:** `backend/app/repositories/user_repository.py`
+
+**Signature:** `save(self, user: User) -> User`
+
+**Key calls:** `self.collection.update_one`, `self._object_id`, `self._to_document`.
+
