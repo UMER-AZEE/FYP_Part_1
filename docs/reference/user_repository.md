@@ -50,3 +50,10 @@ Source: `backend/app/repositories/user_repository.py`. This page records callabl
 
 **Key calls:** `self.collection.update_one`, `self._object_id`, `self._to_document`.
 
+## `UserRepository.delete`
+
+**Source:** `backend/app/repositories/user_repository.py`
+
+**Signature:** `delete(self, user_id: str) -> bool`
+
+**Key calls:** `self.collection.delete_one`, `self._object_id`.

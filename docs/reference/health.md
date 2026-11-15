@@ -11,4 +11,3 @@ Source: `backend/app/api/routes/health.py`. This page records callable signature
 **Route:** `GET /api/health`
 
 **Key calls:** `router.get`, `get_database_status`, `database_status.get`.
-

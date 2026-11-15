@@ -91,4 +91,3 @@ Source: `backend/app/api/routes/auth.py`. This page records callable signatures,
 **Route:** `GET /me`
 
 **Key calls:** `router.get`, `Depends`, `AuthenticatedUserRead.model_validate`.
-

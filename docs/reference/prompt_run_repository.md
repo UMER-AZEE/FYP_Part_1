@@ -25,4 +25,3 @@ Source: `backend/app/repositories/prompt_run_repository.py`. This page records c
 **Signature:** `create(self, run: PromptRun) -> PromptRun`
 
 **Key calls:** `self.collection.insert_one`, `self._to_document`.
-

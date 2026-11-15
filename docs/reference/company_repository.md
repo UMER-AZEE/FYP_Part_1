@@ -25,4 +25,3 @@ Source: `backend/app/repositories/company_repository.py`. This page records call
 **Signature:** `create(self, name: str, slug: str) -> Company`
 
 **Key calls:** `datetime.now`, `self.collection.insert_one`, `Company`.
-

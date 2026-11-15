@@ -49,4 +49,3 @@ Source: `backend/app/repositories/llm_integration_repository.py`. This page reco
 **Signature:** `delete(self, integration_id: str) -> bool`
 
 **Key calls:** `self.collection.delete_one`, `self._object_id`.
-

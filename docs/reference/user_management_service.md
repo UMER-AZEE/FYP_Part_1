@@ -91,4 +91,3 @@ Source: `backend/app/services/user_management_service.py`. This page records cal
 **Key calls:** `self.ensure_manager`, `self.user_repository.find_by_id`, `self.user_repository.delete`.
 
 **Explicit HTTP errors:** "You cannot delete your own account"; "User not found".
-

@@ -51,4 +51,3 @@ Source: `backend/app/api/routes/integrations.py`. This page records callable sig
 **Route:** `DELETE /{integration_id}`
 
 **Key calls:** `router.delete`, `Depends`, `llm_integration_service.delete_integration`, `MessageResponse`.
-

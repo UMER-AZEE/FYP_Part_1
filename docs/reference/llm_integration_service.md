@@ -193,4 +193,3 @@ Source: `backend/app/services/llm_integration_service.py`. This page records cal
 **Key calls:** `self.ensure_manager`, `self.integration_repository.find_by_id`, `self.integration_repository.delete`.
 
 **Explicit HTTP errors:** "Integration not found".
-

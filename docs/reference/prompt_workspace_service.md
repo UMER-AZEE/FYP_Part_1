@@ -189,4 +189,3 @@ Source: `backend/app/services/prompt_workspace_service.py`. This page records ca
 **Signature:** `run_prompt(self, current_user: User, payload: PromptRunExecuteRequest) -> PromptRunExecutionResponse`
 
 **Key calls:** `self.resolve_integration`, `self.resolve_model`, `self.normalize_text`, `self.normalize_optional_text`, `self.normalize_groups`, `PromptRunExecuteRequest`, `perf_counter`, `self.prompt_run_repository.create`.
-

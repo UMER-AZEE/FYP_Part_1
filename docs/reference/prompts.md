@@ -31,4 +31,3 @@ Source: `backend/app/api/routes/prompts.py`. This page records callable signatur
 **Route:** `POST /run`
 
 **Key calls:** `router.post`, `Depends`, `prompt_workspace_service.run_prompt`.
-

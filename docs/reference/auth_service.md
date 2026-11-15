@@ -211,4 +211,3 @@ Source: `backend/app/services/auth_service.py`. This page records callable signa
 **Key calls:** `self.get_invited_user`, `hash_password`, `self.clear_invitation_state`, `self.clear_verification_state`, `self.clear_password_reset_state`, `self.user_repository.save`, `MessageResponse`.
 
 **Explicit HTTP errors:** "Password and confirm password must match".
-

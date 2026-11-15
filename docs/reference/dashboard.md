@@ -11,4 +11,3 @@ Source: `backend/app/api/routes/dashboard.py`. This page records callable signat
 **Route:** `GET `
 
 **Key calls:** `router.get`, `Depends`, `dashboard_service.get_dashboard_data`.
-
