@@ -9,26 +9,26 @@
 
 @layer base {
   :root {
-    --bg: oklch(0.985 0.003 80);
+    --bg: oklch(0.986 0.004 85);
     --panel: oklch(1 0 0);
-    --panel-2: oklch(0.975 0.004 80);
-    --line: oklch(0.915 0.005 80);
-    --line-2: oklch(0.94 0.004 80);
-    --ink: oklch(0.22 0.01 260);
-    --ink-2: oklch(0.42 0.01 260);
-    --ink-3: oklch(0.58 0.008 260);
-    --ink-4: oklch(0.74 0.006 260);
-    --indigo: oklch(0.58 0.14 265);
-    --indigo-bg: oklch(0.96 0.03 265);
-    --rose: oklch(0.62 0.17 20);
-    --rose-bg: oklch(0.96 0.04 20);
-    --amber: oklch(0.74 0.14 75);
-    --amber-bg: oklch(0.96 0.05 75);
-    --emerald: oklch(0.64 0.12 155);
-    --emerald-bg: oklch(0.96 0.04 155);
-    --violet: oklch(0.6 0.14 300);
-    --radius: 10px;
-    --radius-sm: 6px;
+    --panel-2: oklch(0.976 0.004 85);
+    --line: oklch(0.912 0.006 85);
+    --line-2: oklch(0.938 0.004 85);
+    --ink: oklch(0.21 0.012 260);
+    --ink-2: oklch(0.4 0.012 260);
+    --ink-3: oklch(0.56 0.009 260);
+    --ink-4: oklch(0.72 0.007 260);
+    --indigo: oklch(0.56 0.15 265);
+    --indigo-bg: oklch(0.955 0.032 265);
+    --rose: oklch(0.6 0.17 20);
+    --rose-bg: oklch(0.955 0.04 20);
+    --amber: oklch(0.72 0.145 75);
+    --amber-bg: oklch(0.955 0.05 75);
+    --emerald: oklch(0.62 0.125 155);
+    --emerald-bg: oklch(0.955 0.04 155);
+    --violet: oklch(0.58 0.145 300);
+    --radius: 8px;
+    --radius-sm: 5px;
   }
 
   * {
@@ -48,8 +48,8 @@
     -moz-osx-font-smoothing: grayscale;
     background: var(--bg);
     color: var(--ink);
-    font-size: 12.5px;
-    line-height: 1.45;
+    font-size: 13px;
+    line-height: 1.48;
   }
 
   button {
@@ -68,7 +68,7 @@
 
   .app-shell {
     display: grid;
-    grid-template-columns: 220px 1fr;
+    grid-template-columns: 224px 1fr;
     min-height: 100vh;
     min-width: 1200px;
   }
@@ -86,17 +86,17 @@
   .brand {
     display: flex;
     align-items: center;
-    gap: 9px;
+    gap: 10px;
     border-bottom: 1px solid var(--line-2);
-    padding: 16px 16px 14px;
+    padding: 17px 16px 15px;
   }
 
   .brand-mark {
     display: grid;
-    height: 26px;
-    width: 26px;
+    height: 28px;
+    width: 28px;
     place-items: center;
-    border-radius: 7px;
+    border-radius: 6px;
     background: linear-gradient(135deg, var(--ink) 0%, var(--ink-2) 100%);
     color: white;
     font-size: 13px;
@@ -104,7 +104,7 @@
   }
 
   .brand-name {
-    font-size: 13.5px;
+    font-size: 14px;
     font-weight: 600;
   }
 
@@ -119,7 +119,7 @@
   }
 
   .nav-section {
-    padding: 14px 10px 6px;
+    padding: 15px 10px 7px;
   }
 
   .nav-label {
@@ -137,9 +137,9 @@
     display: flex;
     cursor: pointer;
     align-items: center;
-    gap: 10px;
+    gap: 9px;
     border-radius: var(--radius-sm);
-    padding: 7px 10px;
+    padding: 8px 10px;
     font-size: 12.5px;
     color: var(--ink-2);
     border: 0;
@@ -154,7 +154,7 @@
   .nav-item.active {
     background: var(--indigo-bg);
     color: var(--indigo);
-    font-weight: 500;
+    font-weight: 600;
   }
 
   .ic {
@@ -175,7 +175,7 @@
   .side-foot {
     margin-top: auto;
     border-top: 1px solid var(--line-2);
-    padding: 10px;
+    padding: 12px;
   }
 
   .user {
@@ -241,12 +241,12 @@
     top: 0;
     z-index: 5;
     display: flex;
-    height: 52px;
+    height: 54px;
     align-items: center;
     gap: 14px;
     border-bottom: 1px solid var(--line);
     background: var(--panel);
-    padding: 0 22px;
+    padding: 0 24px;
   }
 
   .crumb {
@@ -270,11 +270,11 @@
 
   .search {
     display: flex;
-    width: 260px;
+    width: 280px;
     align-items: center;
     gap: 8px;
     border: 1px solid var(--line);
-    border-radius: var(--radius-sm);
+    border-radius: 8px;
     background: var(--panel-2);
     padding: 5px 10px;
     font-size: 12px;
@@ -284,7 +284,7 @@
   .kbd {
     margin-left: auto;
     border: 1px solid var(--line);
-    border-radius: 3px;
+    border-radius: 4px;
     background: white;
     padding: 1px 5px;
     font-family: var(--font-mono);
@@ -295,11 +295,11 @@
   .btn {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
+    gap: 7px;
     border: 1px solid var(--line);
     border-radius: var(--radius-sm);
     background: var(--panel);
-    padding: 5px 11px;
+    padding: 6px 12px;
     font-size: 12px;
     font-weight: 500;
     color: var(--ink-2);
@@ -312,7 +312,7 @@
   }
 
   .btn.primary {
-    background: var(--ink);
+    background: linear-gradient(135deg, var(--ink), var(--ink-2));
     border-color: var(--ink);
     color: white;
   }
@@ -326,8 +326,8 @@
   }
 
   .pulse {
-    height: 7px;
-    width: 7px;
+    height: 8px;
+    width: 8px;
     border-radius: 999px;
     background: var(--emerald);
   }
@@ -338,8 +338,8 @@
     max-width: 1600px;
     margin: 0 auto;
     flex-direction: column;
-    gap: 12px;
-    padding: 18px 22px 28px;
+    gap: 14px;
+    padding: 20px 24px 30px;
   }
 
   .auth-loading {
@@ -433,9 +433,9 @@
   .auth-card {
     width: min(100%, 460px);
     border: 1px solid var(--line);
-    border-radius: 18px;
+    border-radius: 16px;
     background: oklch(1 0 0 / 0.94);
-    box-shadow: 0 24px 60px oklch(0.24 0.02 260 / 0.08);
+    box-shadow: 0 24px 60px oklch(0.24 0.02 260 / 0.1);
     padding: 28px;
   }
 
@@ -604,7 +604,7 @@
 
   .h1 {
     margin: 0;
-    font-size: 18px;
+    font-size: 19px;
     font-weight: 600;
   }
 
@@ -792,7 +792,7 @@
     gap: 10px;
     flex-wrap: wrap;
     border-bottom: 1px solid var(--line-2);
-    padding: 12px 14px 10px;
+    padding: 13px 14px 11px;
   }
 
   .card-head h3 {
